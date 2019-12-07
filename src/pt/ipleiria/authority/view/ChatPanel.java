@@ -1,4 +1,4 @@
-package view;
+package pt.ipleiria.authority.view;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +23,7 @@ public class ChatPanel extends JPanel {
 
     private void initComponents() {
         //Adds ChatArea
-        lblChannel = new JLabel("Channel->That's so Hot:");
+        lblChannel = new JLabel("Channel->Man's not Hot:");
         lblChannel.setPreferredSize(new Dimension(75, 25));
 
         txtChatArea = new JTextArea();

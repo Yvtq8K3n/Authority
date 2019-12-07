@@ -1,7 +1,7 @@
-package controller;
+package pt.ipleiria.authority.controller;
 
-import model.Connections;
-import view.ConnectionsPanel;
+import pt.ipleiria.authority.model.Connections;
+import pt.ipleiria.authority.view.ConnectionsPanel;
 
 import java.util.List;
 

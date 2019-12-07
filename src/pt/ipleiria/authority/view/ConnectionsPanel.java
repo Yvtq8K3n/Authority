@@ -1,4 +1,4 @@
-package view;
+package pt.ipleiria.authority.view;
 
 import javax.swing.*;
 import java.awt.*;
