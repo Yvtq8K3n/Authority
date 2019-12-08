@@ -1,14 +1,10 @@
 package pt.ipleiria.authority.view;
 
-import pt.ipleiria.authority.UDPBroadcast;
+import pt.ipleiria.authority.Sender;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.plaf.IconUIResource;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 public class ToolBar extends JToolBar{
 
@@ -22,11 +18,11 @@ public class ToolBar extends JToolBar{
 
     private void initComponents() {
         btnShout = new JButton(new ImageIcon("images/shoutface32x32.png"));
-        btnShout.setToolTipText("Shout to retrieve contacts");
+        btnShout.setToolTipText("Shout to retrieve other nodes");
         btnShout.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                UDPBroadcast.broadcast();
+                Sender.broadcast();
             }
         });
         //btn2 =  new JButton(new ImageIcon("images/shoutface32x32.png"));

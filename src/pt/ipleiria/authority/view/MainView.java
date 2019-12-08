@@ -1,8 +1,8 @@
 package pt.ipleiria.authority.view;
 
 
-import pt.ipleiria.authority.UDPBroadcast;
-import pt.ipleiria.authority.UDPUnicastServerReceive;
+import pt.ipleiria.authority.Sender;
+import pt.ipleiria.authority.Receiver;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,12 +42,14 @@ public class MainView extends JFrame {
         add(panel);
     }
 
-    public static void main(String[] args) throws UnknownHostException {
+    public static void main(String[] args){
         new MainView();
-        UDPUnicastServerReceive server=  new UDPUnicastServerReceive();
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
-        executorService.submit(server);
+        Sender sender = new Sender();
+        Receiver receiver = new Receiver();
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
+        executorService.submit(sender);
+        executorService.submit(receiver);
 
-        UDPBroadcast.broadcast();
+        Sender.broadcast();
     }
 }

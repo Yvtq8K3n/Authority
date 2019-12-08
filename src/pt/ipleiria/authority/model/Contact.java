@@ -1,4 +1,4 @@
-package pt.ipleiria.authority;
+package pt.ipleiria.authority.model;
 
 import java.io.Serializable;
 
@@ -14,7 +14,6 @@ public class Contact implements Serializable{
         this.MAC = MAC;
         this.publicKey = publicKey;
     }
-
 
 
     public String getName() {
