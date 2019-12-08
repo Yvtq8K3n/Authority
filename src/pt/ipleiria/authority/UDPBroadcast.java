@@ -2,6 +2,8 @@ package pt.ipleiria.authority;
 
 import pt.ipleiria.authority.view.MainView;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.net.*;
 import java.util.logging.Logger;
@@ -10,8 +12,9 @@ public enum UDPBroadcast {
     UDPBroadcast;
 
     static Logger logger;
-    protected static final int PORT = 9000;//UDP PORT
-    private static final String BROADCAST_ADDRESS = "192.168.1.85"; //"192.168.1.255";
+    protected static final int PORT = 443;//UDP PORT
+    private static final String BROADCAST_ADDRESS =  "192.168.1.255";
+    private static final String LOCALHOST = "127.0.0.1";
 
 
     private static final Contact contact;
@@ -37,28 +40,10 @@ public enum UDPBroadcast {
             oo.close();
             byte[] Buf= bStream.toByteArray();
 
-            int number = Buf.length;
-            byte[] data = new byte[4];
-
-            // int -> byte[]
-            for (int i = 0; i < 4; ++i) {
-                int shift = i << 3; // i * 8
-                data[3-i] = (byte)((number & (0xff << shift)) >>> shift);
-            }
-
             //Creating udp header
-            DatagramPacket packet = new DatagramPacket(
-                    data,
-                    4,
-                    InetAddress.getByName(BROADCAST_ADDRESS),
-                    PORT
-            );
-            clientSocket.send(packet);
-
-            // now sending the payload
-            packet = new DatagramPacket(Buf,
+            DatagramPacket packet = new DatagramPacket(Buf,
                     Buf.length,
-                    InetAddress.getByName(BROADCAST_ADDRESS),
+                    InetAddress.getByName(LOCALHOST),
                     PORT
             );
             clientSocket.send(packet);
