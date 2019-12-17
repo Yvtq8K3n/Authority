@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class ChatPanel extends JPanel {
     //ChatTextWidget
@@ -47,10 +49,8 @@ public class ChatPanel extends JPanel {
         btnSend.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                txtChatArea.append("\n Bob: "+ txtEntryField.getText());
-                if (txtEntryField.getText().toLowerCase().contains("i'm bob"))
-                    txtChatArea.append("\n That's what she said");
-                txtEntryField.setText("");
+                //Sends a message to a network
+                sendMessage();
             }
         });
 
@@ -68,13 +68,37 @@ public class ChatPanel extends JPanel {
 
         JPanel jPanel = new JPanel();
         jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.X_AXIS));
-        jPanel.add(btnUpload);
 
+        txtEntryField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    //Sends a message to a network
+                    sendMessage();
+
+                }
+            }
+        });
+
+        jPanel.add(btnUpload);
         jPanel.add(txtEntryField);
         jPanel.setBackground(txtEntryField.getBackground());
         jPanel.setBorder(txtEntryField.getBorder());
         txtEntryField.setBorder(null);
         return jPanel;
+    }
+
+
+    /**
+     * Send message to the chat
+     */
+    private void sendMessage() {
+        if (!txtEntryField.getText().isEmpty()) {
+            txtChatArea.append("\n Bob: " + txtEntryField.getText());
+            if (txtEntryField.getText().toLowerCase().contains("i'm bob"))
+                txtChatArea.append("\n That's what she said");
+            txtEntryField.setText("");
+        }
     }
 }
 
