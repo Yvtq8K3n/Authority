@@ -5,6 +5,7 @@ import pt.ipleiria.authority.view.MainView;
 
 import java.io.*;
 import java.net.*;
+import java.util.Base64;
 import java.util.logging.Logger;
 
 public class Sender implements Runnable{
@@ -17,13 +18,18 @@ public class Sender implements Runnable{
 
     protected static Contact contact;
 
+    //TODO: criar var key poir gen
+
     public Sender() {
         logger = Logger.getLogger(MainView.class.getName());
+
+        //TODO: Gerar key poir gen
+
         contact = new Contact(
                 "PC-Marquez",
                 LOCALHOST,
                 "jsahdkjashdkaskdj",
-                "zxczxczxczxcc"
+                Base64.getEncoder().encode("zxczxczxczxcc".getBytes())
         );
     }
 

@@ -1,18 +1,58 @@
 package pt.ipleiria.authority.model;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
+import java.security.PublicKey;
+import java.util.Base64;
 
 public class Contact implements Serializable{
+    public int id;
     public String name;
     public String ipAddress;
     public String MAC;
-    public String publicKey;
+    public byte[] publicKey;
 
-    public Contact(String name, String ipAddress, String MAC, String publicKey) {
+    public Contact(String name, String ipAddress, String MAC) {
+        this.name = name;
+        this.ipAddress = ipAddress;
+        this.MAC = MAC;
+    }
+
+    public Contact(String name, String ipAddress, String MAC, byte[] publicKey) {
         this.name = name;
         this.ipAddress = ipAddress;
         this.MAC = MAC;
         this.publicKey = publicKey;
+    }
+
+    private void writeToFile(String path, byte[] key, String name, String ipAddress, String MAC) throws IOException {
+        File f = new File(path);
+
+        if(!f.exists()) {
+            System.out.println("!EXISTS");
+            f.getParentFile().mkdirs();
+        }
+
+        FileOutputStream fos = new FileOutputStream(f, true);
+        fos.write("1".getBytes());
+        fos.write("\t".getBytes());
+
+        fos.write(ipAddress.getBytes());
+        fos.write("\t".getBytes());
+
+        fos.write(name.getBytes());
+        fos.write("\t".getBytes());
+
+        fos.write(MAC.getBytes());
+        fos.write("\t".getBytes());
+
+        fos.write(Base64.getEncoder().encode(key));
+        fos.write("\n".getBytes());
+
+        fos.flush();
+        fos.close();
     }
 
 
@@ -40,11 +80,11 @@ public class Contact implements Serializable{
         this.MAC = MAC;
     }
 
-    public String getPublicKey() {
+    public byte[] getPublicKey() {
         return publicKey;
     }
 
-    public void setPublicKey(String publicKey) {
+    public void setPublicKey(byte[] publicKey) {
         this.publicKey = publicKey;
     }
 }

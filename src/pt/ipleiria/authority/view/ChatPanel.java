@@ -90,7 +90,7 @@ public class ChatPanel extends JPanel {
 
 
     /**
-     * Send message to the chat
+     * Sends message to a network
      */
     private void sendMessage() {
         if (!txtEntryField.getText().isEmpty()) {
