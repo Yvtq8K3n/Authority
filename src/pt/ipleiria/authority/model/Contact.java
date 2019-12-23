@@ -27,7 +27,7 @@ public class Contact implements Serializable{
         this.publicKey = publicKey;
     }
 
-    private void writeToFile(String path, byte[] key, String name, String ipAddress, String MAC) throws IOException {
+    public void writePubKeyToFile(String path, byte[] key, String name, String ipAddress, String MAC) throws IOException {
         File f = new File(path);
 
         if(!f.exists()) {
@@ -55,6 +55,42 @@ public class Contact implements Serializable{
         fos.close();
     }
 
+    //TODO: Criar ficheiro tipo hash  ---   criar o ficheiro tipo hosts (informação do contacto)  --eventually[optional] revoke key
+
+    public void writeHashFile(String path, Contact contact) throws IOException{
+        File f = new File(path);
+        if(!f.exists()) {
+            System.out.println("!EXISTS");
+            f.getParentFile().mkdirs();
+        }
+
+        FileOutputStream fos = new FileOutputStream(f, true);
+        fos.write(contact.id);
+        fos.write("\t".getBytes());
+
+        fos.write(contact.ipAddress.getBytes());
+        fos.write("\t".getBytes());
+
+        fos.flush();
+        fos.close();
+    }
+
+    //TODO: Add write private key
+
+    /*public void writePrivateKeyFile(String path, Contact contact) throws IOException{
+        File f = new File(path);
+        if(!f.exists()) {
+            System.out.println("!EXISTS");
+            f.getParentFile().mkdirs();
+        }
+
+        FileOutputStream fos = new FileOutputStream(f, true);
+        fos.write(contact.privateKey);
+        fos.write("\t".getBytes());
+
+        fos.flush();
+        fos.close();
+    }*/
 
     public String getName() {
         return name;

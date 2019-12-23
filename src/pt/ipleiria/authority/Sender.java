@@ -1,11 +1,12 @@
 package pt.ipleiria.authority;
 
 import pt.ipleiria.authority.model.Contact;
+import pt.ipleiria.authority.model.KeyPairGen;
 import pt.ipleiria.authority.view.MainView;
 
 import java.io.*;
 import java.net.*;
-import java.util.Base64;
+import java.security.NoSuchAlgorithmException;
 import java.util.logging.Logger;
 
 public class Sender implements Runnable{
@@ -15,21 +16,28 @@ public class Sender implements Runnable{
     protected static final String BROADCAST_ADDRESS =  "192.168.1.255";
     protected static final String LOCALHOST = "127.0.0.1";
 
+    //private static final String PATH = "/Users/joaoz/Downloads/"; //MARQUEZ
+    private static final String PATH = "/Users/joaoz/Downloads/"; //JONNY
+
 
     protected static Contact contact;
-
-    //TODO: criar var key poir gen
+    protected static KeyPairGen keyPair;
 
     public Sender() {
         logger = Logger.getLogger(MainView.class.getName());
 
-        //TODO: Gerar key poir gen
+        try {
+            keyPair = new KeyPairGen("RSA", 1024);
+        } catch (NoSuchAlgorithmException e) {
+            logger.info("Algoritmo invalido! " + e.getMessage());
+            e.printStackTrace();
+        }
 
         contact = new Contact(
                 "PC-Marquez",
                 LOCALHOST,
                 "jsahdkjashdkaskdj",
-                Base64.getEncoder().encode("zxczxczxczxcc".getBytes())
+                keyPair.getPublicKeyB64()
         );
     }
 
@@ -78,6 +86,9 @@ public class Sender implements Runnable{
 
                 //Retrieves data
                 Contact contact1 = (Contact) ois.readObject();
+
+                contact1.writePubKeyToFile(PATH + "pubkeys.txt",contact1.publicKey,contact1.name,contact1.ipAddress,contact1.MAC);
+                contact1.writeHashFile(PATH + "hashs.txt",contact1);
 
                 //Show/Process new contact
                 Sender.logger.info("Integration - Success");

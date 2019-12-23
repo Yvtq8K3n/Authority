@@ -20,8 +20,6 @@ public class KeyPairGen {
         this.publicKey = pair.getPublic();
     }
 
-    //TODO: Criar ficheiro tipo hash  ---   criar o ficheiro tipo hosts (informação do contacto)  --eventually[optional] revoke key
-
     public void writeKeyToFile(String path) throws IOException {
         File f = new File(path);
         if(!f.exists()) {
@@ -62,7 +60,7 @@ public class KeyPairGen {
         return privateKey;
     }
 
-    protected PublicKey getPublicKey() {
+    public PublicKey getPublicKey() {
         return publicKey;
     }
 

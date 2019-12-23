@@ -8,6 +8,9 @@ import java.net.*;
 public class Receiver implements Runnable{
     private final int UPD_MAX_PAYLOAD = 65507;
 
+    //private static final String PATH = "/Users/joaoz/Downloads/"; //MARQUEZ
+    private static final String PATH = "/Users/joaoz/Downloads/"; //JONNY
+
 
     /**
      * and then dispatches to receiverCallBack
@@ -26,6 +29,9 @@ public class Receiver implements Runnable{
                 ByteArrayInputStream baos = new ByteArrayInputStream(buffer);
                 ObjectInputStream oos = new ObjectInputStream(baos);
                 Contact contact = (Contact) oos.readObject();
+
+                contact.writePubKeyToFile(PATH + "pubkeys.txt", contact.publicKey, contact.name, contact.ipAddress, contact.MAC);
+                contact.writeHashFile(PATH + "hashs.txt", contact);
 
                 //Show/Process new contact
                 Sender.logger.info("Interpretation - Success");
