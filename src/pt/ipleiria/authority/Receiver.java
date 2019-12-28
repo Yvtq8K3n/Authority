@@ -1,5 +1,6 @@
 package pt.ipleiria.authority;
 
+import pt.ipleiria.authority.controller.ContactController;
 import pt.ipleiria.authority.model.Contact;
 
 import java.io.*;
@@ -28,21 +29,23 @@ public class Receiver implements Runnable{
 
                 ByteArrayInputStream baos = new ByteArrayInputStream(buffer);
                 ObjectInputStream oos = new ObjectInputStream(baos);
+
                 Contact contact = (Contact) oos.readObject();
+                if (!contact.ipAddress.equals(InetAddress.getLocalHost().getHostAddress())){
+                    ContactController.addContact(contact);
 
-                contact.writePubKeyToFile(PATH + "pubkeys.txt", contact.publicKey, contact.name, contact.ipAddress, contact.MAC);
-                contact.writeHashFile(PATH + "hashs.txt", contact);
+                    //Show/Process new contact
+                    Sender.logger.info("Interpretation - Success");
 
-                //Show/Process new contact
-                Sender.logger.info("Interpretation - Success");
-                /*Sender.logger.info("name:"+contact.getName());
-                Sender.logger.info("IP:"+contact.getIpAddress());
-                Sender.logger.info("Mac:"+contact.getMAC());
-                Sender.logger.info("Public:"+contact.getPublicKey());
-                Sender.logger.info("----------------------------------------------------\n");*/
+                    /*Sender.logger.info("name:"+contact.getName());
+                    Sender.logger.info("IP:"+contact.getIpAddress());
+                    Sender.logger.info("Mac:"+contact.getMAC());
+                    Sender.logger.info("Public:"+contact.getPublicKey());
+                    Sender.logger.info("----------------------------------------------------\n");*/
 
-                //Retrieves
-                receiverCallback();
+                    //Retrieves
+                    receiverCallback();
+                }
             }
 
         } catch (SocketException e) {
@@ -59,7 +62,7 @@ public class Receiver implements Runnable{
      * via TCP
      */
     private void receiverCallback(){
-        try(Socket TCPClient = new Socket(Sender.contact.getIpAddress(), Sender.PORT)) {
+        try(Socket TCPClient = new Socket(Sender.contact.ipAddress, Sender.PORT)) {
             DataOutputStream os = new DataOutputStream(TCPClient.getOutputStream());
             ObjectOutputStream oos = new ObjectOutputStream(os);
 

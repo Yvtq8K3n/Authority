@@ -1,5 +1,6 @@
 package pt.ipleiria.authority;
 
+import pt.ipleiria.authority.controller.ContactController;
 import pt.ipleiria.authority.model.Contact;
 import pt.ipleiria.authority.model.KeyPairGen;
 import pt.ipleiria.authority.view.MainView;
@@ -19,13 +20,14 @@ public class Sender implements Runnable{
     //private static final String PATH = "/Users/joaoz/Downloads/"; //MARQUEZ
     private static final String PATH = "/Users/joaoz/Downloads/"; //JONNY
 
-
     protected static Contact contact;
     protected static KeyPairGen keyPair;
 
     public Sender() {
         logger = Logger.getLogger(MainView.class.getName());
 
+
+        //RSA - DES - TRIPLE DES
         try {
             keyPair = new KeyPairGen("RSA", 1024);
         } catch (NoSuchAlgorithmException e) {
@@ -33,15 +35,12 @@ public class Sender implements Runnable{
             e.printStackTrace();
         }
 
-        contact = new Contact(
-                "PC-Marquez",
-                LOCALHOST,
-                "jsahdkjashdkaskdj",
-                keyPair.getPublicKeyB64()
-        );
+        try {
+            contact = ContactController.getMyContact_pbk();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
     }
-
-
 
     /**
      * This method thought the protocol UDP, broadcasts the network
@@ -61,7 +60,7 @@ public class Sender implements Runnable{
             //Creating udp header
             DatagramPacket packet = new DatagramPacket(Buf,
                     Buf.length,
-                    InetAddress.getByName(LOCALHOST),
+                    InetAddress.getByName(BROADCAST_ADDRESS),
                     PORT
             );
             UDPClientSocket.send(packet);
@@ -86,9 +85,7 @@ public class Sender implements Runnable{
 
                 //Retrieves data
                 Contact contact1 = (Contact) ois.readObject();
-
-                contact1.writePubKeyToFile(PATH + "pubkeys.txt",contact1.publicKey,contact1.name,contact1.ipAddress,contact1.MAC);
-                contact1.writeHashFile(PATH + "hashs.txt",contact1);
+                ContactController.addContact(contact1);
 
                 //Show/Process new contact
                 Sender.logger.info("Integration - Success");

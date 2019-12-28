@@ -20,30 +20,6 @@ public class KeyPairGen {
         this.publicKey = pair.getPublic();
     }
 
-    public void writeKeyToFile(String path) throws IOException {
-        File f = new File(path);
-        if(!f.exists()) {
-            System.out.println("!EXISTS");
-            f.getParentFile().mkdirs();
-        }
-
-        FileOutputStream fos = new FileOutputStream(f, true);
-        fos.write(this.getPublicKeyB64());
-        fos.write("\n".getBytes());
-        fos.flush();
-        fos.close();
-    }
-
-    public byte[] readKeyFromFile(String path) throws IOException {
-        File f = new File(path);
-
-        FileInputStream fis = new FileInputStream(f);
-        byte[] key = fis.readAllBytes();
-        fis.close();
-
-        return key;
-    }
-
     public byte[] encrypt(byte[] data, PublicKey key) throws BadPaddingException, IllegalBlockSizeException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException {
         Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         cipher.init(Cipher.ENCRYPT_MODE, key);

@@ -3,6 +3,7 @@ package pt.ipleiria.authority.view;
 
 import pt.ipleiria.authority.Sender;
 import pt.ipleiria.authority.Receiver;
+import pt.ipleiria.authority.controller.ContactController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -49,6 +50,8 @@ public class MainView extends JFrame {
         ExecutorService executorService = Executors.newFixedThreadPool(5);
         executorService.submit(sender);
         executorService.submit(receiver);
+
+        ContactController.getContactController();
 
         Sender.broadcast();
     }

@@ -4,93 +4,84 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.util.Base64;
 
-public class Contact implements Serializable{
+public class Contact implements Serializable, Cloneable{
+
     public int id;
     public String name;
     public String ipAddress;
     public String MAC;
     public byte[] publicKey;
+    public byte[] privateKey;
+
+    public Contact(){
+        try {
+            KeyPairGen keys = new KeyPairGen("RSA", 1024);
+
+            this.privateKey = keys.getPrivateKeyB64();
+            this.publicKey = keys.getPublicKeyB64();
+
+            InetAddress ip = InetAddress.getLocalHost();
+            this.ipAddress = ip.getHostAddress();
+            this.name = ip.getCanonicalHostName();
+            this.MAC = " ";
+
+            NetworkInterface ni =  NetworkInterface.getByInetAddress(ip);
+            if (ni != null) {
+                StringBuilder macAddress = new StringBuilder();
+                byte[] mac = ni.getHardwareAddress();
+                if (mac != null) {
+
+                    /*
+                     * Extract each array of mac address and convert it
+                     * to hexadecimal with the following format
+                     * 08-00-27-DC-4A-9E.
+                     */
+                    for (int i = 0; i < mac.length; i++) {
+                        macAddress.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
+                    }
+                    this.MAC = macAddress.toString();
+                } else {
+                    System.out.println("Address doesn't exist or is not " +
+                            "accessible.");
+                }
+            } else {
+                System.out.println("Network Interface for the specified " +
+                        "address is not found.");
+            }
+
+        } catch (NoSuchAlgorithmException | UnknownHostException | SocketException e) {
+            e.printStackTrace();
+        }
+    }
 
     public Contact(String name, String ipAddress, String MAC) {
+        this();
+        this.id = 0; //fazer incremental
         this.name = name;
         this.ipAddress = ipAddress;
         this.MAC = MAC;
     }
 
-    public Contact(String name, String ipAddress, String MAC, byte[] publicKey) {
+    public Contact(int id, String ipAddress, String name, String MAC, byte[] publicKey) {
+        this.id = id;
         this.name = name;
         this.ipAddress = ipAddress;
         this.MAC = MAC;
         this.publicKey = publicKey;
     }
 
-    public void writePubKeyToFile(String path, byte[] key, String name, String ipAddress, String MAC) throws IOException {
-        File f = new File(path);
-
-        if(!f.exists()) {
-            System.out.println("!EXISTS");
-            f.getParentFile().mkdirs();
-        }
-
-        FileOutputStream fos = new FileOutputStream(f, true);
-        fos.write("1".getBytes());
-        fos.write("\t".getBytes());
-
-        fos.write(ipAddress.getBytes());
-        fos.write("\t".getBytes());
-
-        fos.write(name.getBytes());
-        fos.write("\t".getBytes());
-
-        fos.write(MAC.getBytes());
-        fos.write("\t".getBytes());
-
-        fos.write(Base64.getEncoder().encode(key));
-        fos.write("\n".getBytes());
-
-        fos.flush();
-        fos.close();
+    public Contact(int id, String ipAddress, String name, String MAC, byte[] publicKey, byte[] privateKey) {
+        this(id, ipAddress, name, MAC, publicKey);
+        this.privateKey = privateKey;
     }
-
-    //TODO: Criar ficheiro tipo hash  ---   criar o ficheiro tipo hosts (informação do contacto)  --eventually[optional] revoke key
-
-    public void writeHashFile(String path, Contact contact) throws IOException{
-        File f = new File(path);
-        if(!f.exists()) {
-            System.out.println("!EXISTS");
-            f.getParentFile().mkdirs();
-        }
-
-        FileOutputStream fos = new FileOutputStream(f, true);
-        fos.write(contact.id);
-        fos.write("\t".getBytes());
-
-        fos.write(contact.ipAddress.getBytes());
-        fos.write("\t".getBytes());
-
-        fos.flush();
-        fos.close();
-    }
-
-    //TODO: Add write private key
-
-    /*public void writePrivateKeyFile(String path, Contact contact) throws IOException{
-        File f = new File(path);
-        if(!f.exists()) {
-            System.out.println("!EXISTS");
-            f.getParentFile().mkdirs();
-        }
-
-        FileOutputStream fos = new FileOutputStream(f, true);
-        fos.write(contact.privateKey);
-        fos.write("\t".getBytes());
-
-        fos.flush();
-        fos.close();
-    }*/
 
     public String getName() {
         return name;
@@ -122,5 +113,18 @@ public class Contact implements Serializable{
 
     public void setPublicKey(byte[] publicKey) {
         this.publicKey = publicKey;
+    }
+
+    public byte[] getPrivateKey() {
+        return privateKey;
+    }
+
+    public void setPrivateKey(byte[] privateKey) {
+        this.privateKey = privateKey;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }
