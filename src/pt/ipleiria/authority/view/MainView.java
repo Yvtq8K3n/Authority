@@ -6,6 +6,7 @@ import pt.ipleiria.authority.Receiver;
 import pt.ipleiria.authority.controller.ContactController;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.awt.*;
 import java.net.UnknownHostException;
 import java.util.concurrent.ExecutorService;
@@ -26,6 +27,7 @@ public class MainView extends JFrame {
     }
 
     private void initComponents() {
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         toolBar = new ToolBar();
         connectionsPanel = new ConnectionsPanel();
         chatPanel = new ChatPanel();
@@ -55,4 +57,6 @@ public class MainView extends JFrame {
 
         Sender.broadcast();
     }
+
+
 }

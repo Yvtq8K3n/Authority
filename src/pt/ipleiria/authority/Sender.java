@@ -7,7 +7,6 @@ import pt.ipleiria.authority.view.MainView;
 
 import java.io.*;
 import java.net.*;
-import java.security.NoSuchAlgorithmException;
 import java.util.logging.Logger;
 
 public class Sender implements Runnable{
@@ -21,19 +20,12 @@ public class Sender implements Runnable{
     private static final String PATH = "/Users/joaoz/Downloads/"; //JONNY
 
     protected static Contact contact;
-    protected static KeyPairGen keyPair;
 
     public Sender() {
         logger = Logger.getLogger(MainView.class.getName());
 
 
         //RSA - DES - TRIPLE DES
-        try {
-            keyPair = new KeyPairGen("RSA", 1024);
-        } catch (NoSuchAlgorithmException e) {
-            logger.info("Algoritmo invalido! " + e.getMessage());
-            e.printStackTrace();
-        }
 
         try {
             contact = ContactController.getMyContact_pbk();
@@ -94,6 +86,10 @@ public class Sender implements Runnable{
                 Sender.logger.info("Mac:"+contact1.getMAC());
                 Sender.logger.info("Public:"+contact1.getPublicKey());
                 Sender.logger.info("----------------------------------------------------\n");*/
+
+                ois.close();
+                is.close();
+                connectionSocket.close();
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();

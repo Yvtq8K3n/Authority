@@ -24,11 +24,13 @@ public class Contact implements Serializable, Cloneable{
     public Contact(){
         try {
             KeyPairGen keys = new KeyPairGen("RSA", 1024);
+            InetAddress ip = InetAddress.getLocalHost();
+
+            this.id = 1;
 
             this.privateKey = keys.getPrivateKeyB64();
             this.publicKey = keys.getPublicKeyB64();
 
-            InetAddress ip = InetAddress.getLocalHost();
             this.ipAddress = ip.getHostAddress();
             this.name = ip.getCanonicalHostName();
             this.MAC = " ";
@@ -60,14 +62,6 @@ public class Contact implements Serializable, Cloneable{
         } catch (NoSuchAlgorithmException | UnknownHostException | SocketException e) {
             e.printStackTrace();
         }
-    }
-
-    public Contact(String name, String ipAddress, String MAC) {
-        this();
-        this.id = 0; //fazer incremental
-        this.name = name;
-        this.ipAddress = ipAddress;
-        this.MAC = MAC;
     }
 
     public Contact(int id, String ipAddress, String name, String MAC, byte[] publicKey) {
@@ -122,6 +116,8 @@ public class Contact implements Serializable, Cloneable{
     public void setPrivateKey(byte[] privateKey) {
         this.privateKey = privateKey;
     }
+
+
 
     @Override
     public Object clone() throws CloneNotSupportedException {

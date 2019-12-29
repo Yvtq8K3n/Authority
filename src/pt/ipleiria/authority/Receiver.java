@@ -44,7 +44,7 @@ public class Receiver implements Runnable{
                     Sender.logger.info("----------------------------------------------------\n");*/
 
                     //Retrieves
-                    receiverCallback();
+                    receiverCallback(contact);
                 }
             }
 
@@ -61,13 +61,18 @@ public class Receiver implements Runnable{
      * Return pc information
      * via TCP
      */
-    private void receiverCallback(){
-        try(Socket TCPClient = new Socket(Sender.contact.ipAddress, Sender.PORT)) {
+    private void receiverCallback(Contact senderContact){
+        System.out.println(senderContact);
+        System.out.println(senderContact.ipAddress);
+
+        try(Socket TCPClient = new Socket(senderContact.ipAddress, Sender.PORT)) {
+            //TCPClient.setKeepAlive(true);
+            //TCPClient.setSoTimeout(0);
             DataOutputStream os = new DataOutputStream(TCPClient.getOutputStream());
             ObjectOutputStream oos = new ObjectOutputStream(os);
 
             //Wries data
-            oos.writeObject(Sender.contact);
+            oos.writeObject(senderContact);
 
             //Close connection
             oos.close();

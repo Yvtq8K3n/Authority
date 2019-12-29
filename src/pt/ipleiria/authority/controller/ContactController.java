@@ -9,7 +9,7 @@ public enum ContactController {
     CONTACT_CONTROLLER;
 
     private static final String PATH = "/Users/joaoz/Downloads/";
-    private static final int MY_CONTACT_ID = 0;
+    private static final int MY_CONTACT_ID = 1;
 
     private static Contact myContact;
     private static ArrayList<Contact> contacts;
@@ -59,7 +59,7 @@ public enum ContactController {
         File f = new File(file,"RSAPublic.txt");
 
         FileOutputStream fos = new FileOutputStream(f, true);
-        fos.write(contact.id);
+        fos.write(String.valueOf(contact.id).getBytes());
         fos.write("\t".getBytes());
 
         fos.write(contact.ipAddress.getBytes());
@@ -87,7 +87,7 @@ public enum ContactController {
         fos.write(contact.ipAddress.getBytes());
         fos.write("\t".getBytes());
 
-        fos.write(contact.id);
+        fos.write(String.valueOf(contact.id).getBytes());
         fos.write("\n".getBytes());
 
         fos.flush();
@@ -118,25 +118,25 @@ public enum ContactController {
 
         String line = reader.readLine();
         while(line != null){
-            System.out.println(line);
-            line = reader.readLine();
 
-            System.out.println("ESTOU A LER O ARRAY DE CONTACTOS");
+            //System.out.println("ESTOU A LER O ARRAY DE CONTACTOS");
 
             String[] array = line.split("\t");
 
             int id = Integer.parseInt(array[0]);
-            String name = array[1];
-            String ipAddress = array[2];
+            String ipAddress = array[1];
+            String name = array[2];
             String MAC = array[3];
             byte[] publicKey = array[4].getBytes();
 
             if(id == MY_CONTACT_ID){
                 byte[] privateKey = readContactPrivate();
-                myContact = new Contact(id, ipAddress, name, MAC, privateKey);
+                myContact = new Contact(id, ipAddress, name, MAC, publicKey, privateKey);
             } else {
-                contacts.add(new Contact(id, name, ipAddress, MAC, publicKey));
+                contacts.add(new Contact(id, ipAddress, name, MAC, publicKey));
             }
+
+            line = reader.readLine();
         }
 
         reader.close();
@@ -169,18 +169,6 @@ public enum ContactController {
         Contact c = (Contact) myContact.clone();
         c.setPrivateKey(null);
         return c;
-    }
-
-    public static void setMyContact(Contact myContact) {
-        ContactController.myContact = myContact;
-    }
-
-    public static void setMyContact() {
-        myContact = new Contact();
-    }
-
-    public static void setContacts(ArrayList<Contact> contacts) {
-        ContactController.contacts = contacts;
     }
 
     public static void addContact(Contact c){
