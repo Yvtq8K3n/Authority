@@ -66,19 +66,19 @@ public enum ContactController {
         File f = new File(file,"RSAPublic.txt");
 
         FileOutputStream fos = new FileOutputStream(f, true);
-        fos.write(String.valueOf(contact.id).getBytes());
+        fos.write(String.valueOf(contact.getId()).getBytes());
         fos.write("\t".getBytes());
 
-        fos.write(contact.ipAddress.getBytes());
+        fos.write(contact.getIpAddress().getBytes());
         fos.write("\t".getBytes());
 
-        fos.write(contact.name.getBytes());
+        fos.write(contact.getName().getBytes());
         fos.write("\t".getBytes());
 
-        fos.write(contact.MAC.getBytes());
+        fos.write(contact.getMAC().getBytes());
         fos.write("\t".getBytes());
 
-        fos.write(contact.publicKey);
+        fos.write(contact.getPublicKey());
         fos.write("\n".getBytes());
 
         fos.flush();
@@ -91,10 +91,10 @@ public enum ContactController {
         File f = new File(directory,"Hash.txt");
 
         FileOutputStream fos = new FileOutputStream(f, true);
-        fos.write(contact.ipAddress.getBytes());
+        fos.write(contact.getIpAddress().getBytes());
         fos.write("\t".getBytes());
 
-        fos.write(String.valueOf(contact.id).getBytes());
+        fos.write(String.valueOf(contact.getId()).getBytes());
         fos.write("\n".getBytes());
 
         fos.flush();
@@ -106,7 +106,7 @@ public enum ContactController {
         File f = new File(directory,"RSAPrivate.txt");
 
         FileOutputStream fos = new FileOutputStream(f, true);
-        fos.write(contact.privateKey);
+        fos.write(contact.getPrivateKey());
         fos.flush();
         fos.close();
     }

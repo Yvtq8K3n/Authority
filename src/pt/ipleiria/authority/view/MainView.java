@@ -37,7 +37,7 @@ public class MainView extends JFrame {
         //Adds panels into SplitPane
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, connectionsPanel, chatPanel);
         splitPane.setOneTouchExpandable(true);
-        splitPane.setDividerLocation(150);
+        splitPane.setDividerLocation(170);
 
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());

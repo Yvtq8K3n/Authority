@@ -15,12 +15,12 @@ import java.util.Base64;
 
 public class Contact implements Serializable, Cloneable{
 
-    public int id;
-    public String name;
-    public String ipAddress;
-    public String MAC;
-    public byte[] publicKey;
-    public byte[] privateKey;
+    private int id;
+    private String name;
+    private String ipAddress;
+    private String MAC;
+    private byte[] publicKey;
+    private byte[] privateKey;
 
     public Contact(){
         try {
@@ -76,6 +76,10 @@ public class Contact implements Serializable, Cloneable{
     public Contact(int id, String ipAddress, String name, String MAC, byte[] publicKey, byte[] privateKey) {
         this(id, ipAddress, name, MAC, publicKey);
         this.privateKey = privateKey;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {

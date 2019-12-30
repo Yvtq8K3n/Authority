@@ -99,6 +99,11 @@ public class Sender implements Runnable{
         }
     }
 
+    /** Analisys the UDP package in order to identify the src
+     * @param remoteAddress
+     * @return
+     * @throws SocketException
+     */
     protected static InetAddress getOutboundAddress(SocketAddress remoteAddress) throws SocketException {
         DatagramSocket sock = new DatagramSocket();
         // connect is needed to bind the socket and retrieve the local address
