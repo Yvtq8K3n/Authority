@@ -33,6 +33,7 @@ public class Contact implements Serializable, Cloneable{
             this.privateKey = Base64.getEncoder().encode(pair.getPrivate().getEncoded());
             this.publicKey = Base64.getEncoder().encode(pair.getPublic().getEncoded());
             this.ipAddress = ip.getHostAddress();
+            System.out.println(ipAddress);
             this.name = ip.getCanonicalHostName();
             this.MAC = " ";
 

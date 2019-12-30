@@ -1,5 +1,6 @@
 package pt.ipleiria.authority.view;
 
+import pt.ipleiria.authority.controller.ConnectionsController;
 import pt.ipleiria.authority.controller.ContactController;
 import pt.ipleiria.authority.model.Connection;
 import pt.ipleiria.authority.model.Contact;
@@ -14,7 +15,11 @@ import java.util.Iterator;
 public class ConnectionsPanel extends JPanel{
 
     private JLabel lblTitle;
-    private JTree trConnections;
+
+    public JTree trConnections;
+    public DefaultTreeModel model;
+    public DefaultMutableTreeNode connectionsNode;
+    public DefaultMutableTreeNode contactsNode;
 
     public ConnectionsPanel(){
         initComponents();
@@ -30,18 +35,23 @@ public class ConnectionsPanel extends JPanel{
 
         //Adds jTree
         DefaultMutableTreeNode root = new DefaultMutableTreeNode();
-        DefaultTreeModel model = new DefaultTreeModel(root);
+        model = new DefaultTreeModel(root);
 
         //Adds ConnectionsTab
-        DefaultMutableTreeNode connectionsNode = new DefaultMutableTreeNode("Connections");
+        connectionsNode = new DefaultMutableTreeNode("Connections", true);
         root.add(connectionsNode);
 
+        Iterator<Connection> connections = ConnectionsController.getConnections();
+        while(connections.hasNext()){
+            connectionsNode.add(new DefaultMutableTreeNode(connections.next()));
+        }
+
         //Adds ContactsTab
-        DefaultMutableTreeNode contactsNode = new DefaultMutableTreeNode("Contacts");
+        contactsNode = new DefaultMutableTreeNode("Contacts");
         root.add(contactsNode);
+
         Iterator<Contact> contacts = ContactController.getContacts();
         while(contacts.hasNext()){
-
             contactsNode.add(new DefaultMutableTreeNode(contacts.next()));
         }
 
@@ -56,12 +66,24 @@ public class ConnectionsPanel extends JPanel{
             public void valueChanged(TreeSelectionEvent selection) {
                 DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode)selection.getPath().getLastPathComponent();
                 if(selectedNode.isLeaf()) {
-                    selectedNode.getUserObject();
+                    Object o = selectedNode.getUserObject();
+                    System.out.println(o instanceof Contact);
+                    if (o instanceof Connection){
+
+                    }else if (o instanceof Contact){
+                        ConnectionsController.addConnection((Contact) o);
+                        System.out.println(selectedNode.getUserObject());
+                    }
+
                 }
             }
         });
         trConnections.setRootVisible(false);
         trConnections.setBorder(BorderFactory.createEtchedBorder(Color.BLACK,Color.BLACK));
+
+        //Expands nodes
+        trConnections.expandPath(new TreePath(contactsNode.getPath()));
+
         JScrollPane scroll = new JScrollPane(trConnections);
         add(scroll);
     }
@@ -73,6 +95,7 @@ public class ConnectionsPanel extends JPanel{
             label = new JLabel();
         }
 
+        @Override
         public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded,
                                                       boolean leaf, int row, boolean hasFocus) {
             Object o = ((DefaultMutableTreeNode) value).getUserObject();

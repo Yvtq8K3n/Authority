@@ -3,6 +3,7 @@ package pt.ipleiria.authority.view;
 
 import pt.ipleiria.authority.Sender;
 import pt.ipleiria.authority.Receiver;
+import pt.ipleiria.authority.controller.ConnectionsController;
 import pt.ipleiria.authority.controller.ContactController;
 
 import javax.swing.*;
@@ -30,6 +31,7 @@ public class MainView extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         toolBar = new ToolBar();
         connectionsPanel = new ConnectionsPanel();
+        ConnectionsController.setConnectionsPanel(connectionsPanel);
         chatPanel = new ChatPanel();
 
         //Adds panels into SplitPane
