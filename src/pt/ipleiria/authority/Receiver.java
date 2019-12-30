@@ -9,10 +9,6 @@ import java.net.*;
 public class Receiver implements Runnable{
     private final int UPD_MAX_PAYLOAD = 65507;
 
-    //private static final String PATH = "/Users/joaoz/Downloads/"; //MARQUEZ
-    private static final String PATH = "/Users/joaoz/Downloads/"; //JONNY
-
-
     /**
      * and then dispatches to receiverCallBack
      */
@@ -30,8 +26,13 @@ public class Receiver implements Runnable{
                 ByteArrayInputStream baos = new ByteArrayInputStream(buffer);
                 ObjectInputStream oos = new ObjectInputStream(baos);
 
-                Contact contact = (Contact) oos.readObject();
-                if (!contact.ipAddress.equals(InetAddress.getLocalHost().getHostAddress())){
+                //Retrieve srcAddress/destAddress
+                String srcAddress = Sender.getOutboundAddress(datagramPacket.getSocketAddress()).getHostAddress();
+                String destAddress = datagramPacket.getAddress().getHostAddress();
+
+                if (!srcAddress.equals(destAddress)){
+                    Contact contact = (Contact) oos.readObject();
+                    contact.setIpAddress(srcAddress);
                     ContactController.addContact(contact);
 
                     //Show/Process new contact
@@ -62,12 +63,7 @@ public class Receiver implements Runnable{
      * via TCP
      */
     private void receiverCallback(Contact senderContact){
-        System.out.println(senderContact);
-        System.out.println(senderContact.ipAddress);
-
         try(Socket TCPClient = new Socket(senderContact.ipAddress, Sender.PORT)) {
-            //TCPClient.setKeepAlive(true);
-            //TCPClient.setSoTimeout(0);
             DataOutputStream os = new DataOutputStream(TCPClient.getOutputStream());
             ObjectOutputStream oos = new ObjectOutputStream(os);
 

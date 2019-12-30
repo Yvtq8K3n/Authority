@@ -12,6 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public enum ContactController {
     CONTACT_CONTROLLER;
@@ -21,8 +22,6 @@ public enum ContactController {
 
     private static Contact myContact;
     private static ArrayList<Contact> contacts;
-
-    /*my contact details*/
 
     static {
         contacts = new ArrayList<>();
@@ -163,10 +162,6 @@ public enum ContactController {
         return key;
     }
 
-    public static ArrayList<Contact> getContacts() {
-        return contacts;
-    }
-
     public static Contact getMyContact() {
         return myContact;
     }
@@ -184,5 +179,9 @@ public enum ContactController {
 
     public static int getContactController() {
         return MY_CONTACT_ID;
+    }
+
+    public static Iterator<Contact> getContacts() {
+        return contacts.iterator();
     }
 }

@@ -134,4 +134,9 @@ public class Contact implements Serializable, Cloneable{
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }

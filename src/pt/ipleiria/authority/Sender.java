@@ -14,10 +14,6 @@ public class Sender implements Runnable{
     protected static final int PORT = 443;//UDP PORT
     protected static final String BROADCAST_ADDRESS =  "192.168.1.255";
     protected static final String LOCALHOST = "127.0.0.1";
-
-    //private static final String PATH = "/Users/joaoz/Downloads/"; //MARQUEZ
-    private static final String PATH = "/Users/joaoz/Downloads/"; //JONNY
-
     protected static Contact contact;
 
     public Sender() {
@@ -46,6 +42,7 @@ public class Sender implements Runnable{
             ObjectOutput oo = new ObjectOutputStream(bStream);
             oo.writeObject(contact);
             oo.close();
+
             byte[] Buf = bStream.toByteArray();
 
             //Creating udp header
@@ -74,9 +71,14 @@ public class Sender implements Runnable{
                 DataInputStream is = new DataInputStream(connectionSocket.getInputStream());
                 ObjectInputStream ois = new ObjectInputStream(is);
 
+                //Retrieve srcAddress
+                String srcAddress = connectionSocket.getInetAddress().toString();
+                srcAddress = srcAddress.replace("/","");
+
                 //Retrieves data
-                Contact contact1 = (Contact) ois.readObject();
-                ContactController.addContact(contact1);
+                Contact contact = (Contact) ois.readObject();
+                contact.setIpAddress(srcAddress);
+                ContactController.addContact(contact);
 
                 //Show/Process new contact
                 Sender.logger.info("Integration - Success");
@@ -95,6 +97,21 @@ public class Sender implements Runnable{
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    protected static InetAddress getOutboundAddress(SocketAddress remoteAddress) throws SocketException {
+        DatagramSocket sock = new DatagramSocket();
+        // connect is needed to bind the socket and retrieve the local address
+        // later (it would return 0.0.0.0 otherwise)
+        sock.connect(remoteAddress);
+
+        final InetAddress localAddress = sock.getLocalAddress();
+
+        sock.disconnect();
+        sock.close();
+        sock = null;
+
+        return localAddress;
     }
 
 
