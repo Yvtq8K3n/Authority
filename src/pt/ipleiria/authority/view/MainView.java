@@ -23,7 +23,7 @@ public class MainView extends JFrame {
     public MainView(){
         initComponents();
         setTitle("Authority");
-        setSize(600,200);
+        setSize(720,225);
         setVisible(true);
         pack();
     }
@@ -37,7 +37,7 @@ public class MainView extends JFrame {
         //Adds panels into SplitPane
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, connectionsPanel, chatPanel);
         splitPane.setOneTouchExpandable(true);
-        splitPane.setDividerLocation(170);
+        splitPane.setDividerLocation(200);
 
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
