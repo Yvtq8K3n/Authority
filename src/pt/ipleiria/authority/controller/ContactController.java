@@ -46,12 +46,12 @@ public enum ContactController {
         File f = new File(PATH);
 
         //Create directory when does not exists
-        if(!f.exists()){
+        if (!f.exists()) {
             f.getParentFile().mkdirs();
         }
 
         try {
-            if(contact.getPrivateKey() != null){
+            if (contact.getPrivateKey() != null) {
                 writePrivateKeyFile(f, contact);
             }
 
@@ -64,51 +64,67 @@ public enum ContactController {
 
     public static void writePublicKeyToFile(File file, Contact contact) throws IOException {
         File f = new File(file,"RSAPublic.txt");
+        while(true) {
+            boolean fileIsUnLocked = f.renameTo(f);
+            if (fileIsUnLocked) {
+                FileOutputStream fos = new FileOutputStream(f, true);
+                fos.write(String.valueOf(contact.getId()).getBytes());
+                fos.write("\t".getBytes());
 
-        FileOutputStream fos = new FileOutputStream(f, true);
-        fos.write(String.valueOf(contact.getId()).getBytes());
-        fos.write("\t".getBytes());
+                fos.write(contact.getIpAddress().getBytes());
+                fos.write("\t".getBytes());
 
-        fos.write(contact.getIpAddress().getBytes());
-        fos.write("\t".getBytes());
+                fos.write(contact.getName().getBytes());
+                fos.write("\t".getBytes());
 
-        fos.write(contact.getName().getBytes());
-        fos.write("\t".getBytes());
+                fos.write(contact.getMAC().getBytes());
+                fos.write("\t".getBytes());
 
-        fos.write(contact.getMAC().getBytes());
-        fos.write("\t".getBytes());
+                fos.write(contact.getPublicKey());
+                fos.write("\n".getBytes());
 
-        fos.write(contact.getPublicKey());
-        fos.write("\n".getBytes());
-
-        fos.flush();
-        fos.close();
+                fos.flush();
+                fos.close();
+                break;
+            }
+        }
     }
 
     //TODO: eventually[optional] revoke key
     //write hash map file
     public static void writeHashFile(File directory, Contact contact) throws IOException{
         File f = new File(directory,"Hash.txt");
+        while(true) {
+            boolean fileIsUnLocked = f.renameTo(f);
+            if (fileIsUnLocked) {
+                FileOutputStream fos = new FileOutputStream(f, true);
+                fos.write(contact.getIpAddress().getBytes());
+                fos.write("\t".getBytes());
 
-        FileOutputStream fos = new FileOutputStream(f, true);
-        fos.write(contact.getIpAddress().getBytes());
-        fos.write("\t".getBytes());
+                fos.write(String.valueOf(contact.getId()).getBytes());
+                fos.write("\n".getBytes());
 
-        fos.write(String.valueOf(contact.getId()).getBytes());
-        fos.write("\n".getBytes());
-
-        fos.flush();
-        fos.close();
+                fos.flush();
+                fos.close();
+                break;
+            }
+        }
     }
 
     //write private key
     public static void writePrivateKeyFile(File directory, Contact contact) throws IOException{
         File f = new File(directory,"RSAPrivate.txt");
 
-        FileOutputStream fos = new FileOutputStream(f, true);
-        fos.write(contact.getPrivateKey());
-        fos.flush();
-        fos.close();
+        while(true) {
+            boolean fileIsUnLocked = f.renameTo(f);
+            if (fileIsUnLocked) {
+                FileOutputStream fos = new FileOutputStream(f, true);
+                fos.write(contact.getPrivateKey());
+                fos.flush();
+                fos.close();
+                break;
+            }
+        }
     }
 
     private static void readContacts() throws IOException {

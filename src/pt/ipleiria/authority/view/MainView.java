@@ -6,9 +6,7 @@ import pt.ipleiria.authority.Receiver;
 import pt.ipleiria.authority.controller.ContactController;
 
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.awt.*;
-import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.concurrent.ExecutorService;
