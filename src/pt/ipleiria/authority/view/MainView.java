@@ -9,6 +9,8 @@ import javax.swing.*;
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.awt.*;
 import java.net.UnknownHostException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -45,8 +47,9 @@ public class MainView extends JFrame {
         add(panel);
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws InvalidKeySpecException, NoSuchAlgorithmException {
         new MainView();
+
         Sender sender = new Sender();
         Receiver receiver = new Receiver();
         ExecutorService executorService = Executors.newFixedThreadPool(5);
@@ -54,6 +57,8 @@ public class MainView extends JFrame {
         executorService.submit(receiver);
 
         ContactController.getContactController();
+
+        System.out.println(ContactController.getMyContact().getPrivateKeyClass().toString());
 
         Sender.broadcast();
     }

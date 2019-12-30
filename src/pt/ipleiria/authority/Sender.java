@@ -2,7 +2,6 @@ package pt.ipleiria.authority;
 
 import pt.ipleiria.authority.controller.ContactController;
 import pt.ipleiria.authority.model.Contact;
-import pt.ipleiria.authority.model.KeyPairGen;
 import pt.ipleiria.authority.view.MainView;
 
 import java.io.*;

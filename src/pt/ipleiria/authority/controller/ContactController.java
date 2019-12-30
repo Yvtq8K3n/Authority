@@ -2,13 +2,21 @@ package pt.ipleiria.authority.controller;
 
 import pt.ipleiria.authority.model.Contact;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.*;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.ArrayList;
 
 public enum ContactController {
     CONTACT_CONTROLLER;
 
-    private static final String PATH = "/Users/joaoz/Downloads/";
+    private static final String PATH = "C:\\ola";//"/Users/joaoz/Downloads/";
     private static final int MY_CONTACT_ID = 1;
 
     private static Contact myContact;
@@ -100,8 +108,6 @@ public enum ContactController {
 
         FileOutputStream fos = new FileOutputStream(f, true);
         fos.write(contact.privateKey);
-        fos.write("\n".getBytes());
-
         fos.flush();
         fos.close();
     }

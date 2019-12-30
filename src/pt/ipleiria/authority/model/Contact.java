@@ -8,8 +8,9 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 
 public class Contact implements Serializable, Cloneable{
@@ -23,14 +24,14 @@ public class Contact implements Serializable, Cloneable{
 
     public Contact(){
         try {
-            KeyPairGen keys = new KeyPairGen("RSA", 1024);
+            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+            keyGen.initialize(1024);
+            KeyPair pair = keyGen.generateKeyPair();
             InetAddress ip = InetAddress.getLocalHost();
 
             this.id = 1;
-
-            this.privateKey = keys.getPrivateKeyB64();
-            this.publicKey = keys.getPublicKeyB64();
-
+            this.privateKey = Base64.getEncoder().encode(pair.getPrivate().getEncoded());
+            this.publicKey = Base64.getEncoder().encode(pair.getPublic().getEncoded());
             this.ipAddress = ip.getHostAddress();
             this.name = ip.getCanonicalHostName();
             this.MAC = " ";
@@ -101,23 +102,33 @@ public class Contact implements Serializable, Cloneable{
         this.MAC = MAC;
     }
 
-    public byte[] getPublicKey() {
-        return publicKey;
-    }
-
     public void setPublicKey(byte[] publicKey) {
         this.publicKey = publicKey;
-    }
-
-    public byte[] getPrivateKey() {
-        return privateKey;
     }
 
     public void setPrivateKey(byte[] privateKey) {
         this.privateKey = privateKey;
     }
 
+    public PrivateKey getPrivateKeyClass() throws InvalidKeySpecException, NoSuchAlgorithmException {
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKey));
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        return keyFactory.generatePrivate(keySpec);
+    }
 
+    public PublicKey getPublicKeyClass() throws InvalidKeySpecException, NoSuchAlgorithmException {
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(publicKey));
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        return keyFactory.generatePublic(keySpec);
+    }
+
+    public byte[] getPublicKey() {
+        return publicKey;
+    }
+
+    public byte[] getPrivateKey() {
+        return privateKey;
+    }
 
     @Override
     public Object clone() throws CloneNotSupportedException {
