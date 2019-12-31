@@ -27,13 +27,14 @@ public class Receiver implements Runnable{
                 ObjectInputStream oos = new ObjectInputStream(baos);
 
                 //Retrieve srcAddress/destAddress
-                String srcAddress = Sender.getOutboundAddress(datagramPacket.getSocketAddress()).getHostAddress();
-                String destAddress = datagramPacket.getAddress().getHostAddress();
+                String srcAddress = datagramPacket.getAddress().getHostAddress();
+                String destAddress = Sender.getOutboundAddress(datagramPacket.getSocketAddress()).getHostAddress();
 
                 if (!srcAddress.equals(destAddress)){
                     Contact contact = (Contact) oos.readObject();
                     contact.updateId();
                     contact.setIpAddress(srcAddress);
+                    contact.setId(2);
                     ContactController.addContact(contact);
 
                     //Show/Process new contact
