@@ -23,6 +23,8 @@ public class Sender implements Runnable{
         //RSA - DES - TRIPLE DES
 
         try {
+            ContactController.getContactController();
+
             contact = ContactController.getMyContact_pbk();
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();

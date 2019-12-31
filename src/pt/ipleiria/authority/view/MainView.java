@@ -30,8 +30,10 @@ public class MainView extends JFrame {
     private void initComponents() {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         toolBar = new ToolBar();
+
         connectionsPanel = new ConnectionsPanel();
         ConnectionsController.setConnectionsPanel(connectionsPanel);
+
         chatPanel = new ChatPanel();
 
         //Adds panels into SplitPane
@@ -55,10 +57,6 @@ public class MainView extends JFrame {
         ExecutorService executorService = Executors.newFixedThreadPool(5);
         executorService.submit(sender);
         executorService.submit(receiver);
-
-        ContactController.getContactController();
-
-        System.out.println(ContactController.getMyContact().getPrivateKeyClass().toString());
 
         Sender.broadcast();
     }
