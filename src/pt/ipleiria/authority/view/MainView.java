@@ -4,6 +4,7 @@ package pt.ipleiria.authority.view;
 import pt.ipleiria.authority.Sender;
 import pt.ipleiria.authority.Receiver;
 import pt.ipleiria.authority.controller.ConnectionsController;
+import pt.ipleiria.authority.controller.ContactController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,6 +32,7 @@ public class MainView extends JFrame {
         toolBar = new ToolBar();
 
         connectionsPanel = new ConnectionsPanel();
+        ContactController.setConnectionsPanel(connectionsPanel);
         ConnectionsController.setConnectionsPanel(connectionsPanel);
 
         chatPanel = new ChatPanel();

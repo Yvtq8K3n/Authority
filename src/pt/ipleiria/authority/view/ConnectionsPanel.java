@@ -49,7 +49,7 @@ public class ConnectionsPanel extends JPanel{
         contactsNode = new DefaultMutableTreeNode("Contacts");
         root.add(contactsNode);
 
-        Iterator<Contact> contacts = ContactController.getContacts();
+        Iterator<Contact> contacts = ContactController.getActiveContacts();
         while(contacts.hasNext()){
             contactsNode.add(new DefaultMutableTreeNode(contacts.next()));
         }
@@ -110,5 +110,18 @@ public class ConnectionsPanel extends JPanel{
             }
             return label;
         }
+    }
+
+    public void updateJTree(DefaultMutableTreeNode root, Object value, boolean select){
+        DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(value);
+
+        //Updates Connections
+        model.insertNodeInto(newNode, root, root.getChildCount());
+
+        //Expand root tree
+        trConnections.expandPath(new TreePath(root.getPath()));
+
+        //Select new node?
+        if (select) trConnections.setSelectionPath(new TreePath(newNode.getPath()));
     }
 }

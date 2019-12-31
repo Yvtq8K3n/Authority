@@ -52,7 +52,6 @@ public class Sender implements Runnable{
             );
             UDPClientSocket.send(packet);
 
-
             Sender.logger.info("Introduction - Success");
         } catch (SocketException e) {
             e.printStackTrace();

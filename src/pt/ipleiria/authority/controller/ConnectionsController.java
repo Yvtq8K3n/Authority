@@ -32,16 +32,8 @@ public enum ConnectionsController {
         Connection connection = new Connection(c);
         connections.add(connection);
 
-        DefaultMutableTreeNode a = new DefaultMutableTreeNode(connection);
-
-        //Updates Connections
-        connectionsPanel.model.insertNodeInto(new DefaultMutableTreeNode(connection),
-                connectionsPanel.connectionsNode, connectionsPanel.connectionsNode.getChildCount());
-
-        //Selects new Entry
-        connectionsPanel.trConnections.expandPath(new TreePath(connectionsPanel.connectionsNode.getPath()));
-        connectionsPanel.trConnections.setSelectionPath(new TreePath(a.getPath()));
-
+        //Adds to JTree new Connection
+        connectionsPanel.updateJTree(connectionsPanel.connectionsNode, connection, true);
     }
 
     public byte[] encrypt(byte[] data, PublicKey key) throws BadPaddingException, IllegalBlockSizeException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException {

@@ -1,10 +1,12 @@
 package pt.ipleiria.authority.controller;
 
 import pt.ipleiria.authority.model.Contact;
+import pt.ipleiria.authority.view.ConnectionsPanel;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 
 public enum ContactController {
     CONTACT_CONTROLLER;
@@ -14,12 +16,21 @@ public enum ContactController {
     private static Contact myContact;
     private static ArrayList<Contact> contacts;
 
+    //Helps identify the actives contacts
+    private static List<String> activeIpAddress;
+    private static Map<String, Contact> hashmap;
+
+    //View
+    private static ConnectionsPanel connectionsPanel;
+
     static {
         contacts = new ArrayList<>();
+        hashmap = new HashMap<>();
+        activeIpAddress = new ArrayList<>();
 
         try {
+            //Reads all known contacts into memory
             readContacts();
-            //TODO: ler hash file
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -176,23 +187,49 @@ public enum ContactController {
         }
     }
 
-    public static void addContact(Contact c) throws IOException {
+    public static void addContact(Contact contact) throws IOException {
         boolean contains = false;
-        for (Contact cs : contacts){
-            if (c.compareTo(cs)){ //MAC PUBLIC
-                cs.setName(c.getName());
-                cs.setIpAddress(c.getIpAddress());
-                updateContactsFile(PATH, cs);
+        for (Contact c : contacts){
+            if (contact.compareTo(c)){ //MAC PUBLIC
+                c.setName(contact.getName());
+                c.setIpAddress(contact.getIpAddress());
+                updateContactsFile(PATH, c);
                 contains = true;
             }
         }
 
         if (!contains) {
-            c.updateId();
-            contacts.add(c);
-            ContactController.writeToFileContact(c);
+            contact.updateId();
+            contacts.add(contact);
+            ContactController.writeToFileContact(contact);
         }
 
+        //Adds contact to hash map
+        String ipAddress = contact.getIpAddress();
+        hashmap.put(ipAddress, contact);
+        if(!activeIpAddress.contains(ipAddress)) activeIpAddress.add(ipAddress);
+
+        //Adds to JTree newly Active Contact
+        connectionsPanel.updateJTree(connectionsPanel.contactsNode, contact, false);
+    }
+
+    public static Iterator<Contact> getActiveContacts() {
+        return new Iterator<Contact>() {
+            private Iterator<String> a = activeIpAddress.iterator();
+
+            public boolean hasNext() {
+                return a.hasNext();
+            }
+            public Contact next() {
+                if (!hasNext()) throw new NoSuchElementException();
+
+                return hashmap.get(a.next());
+            }
+        };
+    }
+
+    public static void setConnectionsPanel(ConnectionsPanel panel){
+        connectionsPanel = panel;
     }
 
     public static Contact getMyContact() {
