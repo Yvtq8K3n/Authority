@@ -34,7 +34,6 @@ public class Receiver implements Runnable{
                     Contact contact = (Contact) oos.readObject();
                     contact.updateId();
                     contact.setIpAddress(srcAddress);
-                    contact.setId(2);
                     ContactController.addContact(contact);
 
                     //Show/Process new contact

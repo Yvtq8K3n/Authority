@@ -74,8 +74,8 @@ public class Sender implements Runnable{
 
                 //Retrieves data
                 Contact contact = (Contact) ois.readObject();
+                contact.updateId();
                 contact.setIpAddress(srcAddress);
-                contact.setId(2);
                 ContactController.addContact(contact);
 
                 //Show/Process new contact
