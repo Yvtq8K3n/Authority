@@ -51,6 +51,8 @@ public class Sender implements Runnable{
                     PORT
             );
             UDPClientSocket.send(packet);
+            contact.updateId();
+            ContactController.addContact(contact);
 
             Sender.logger.info("Introduction - Success");
         } catch (SocketException e) {

@@ -102,7 +102,7 @@ public class ConnectionsPanel extends JPanel{
 
             }else if (o instanceof Contact) {
                 Contact contact = (Contact) o;
-                label.setIcon(new ImageIcon( "images/contacts/face_"+ (contact.getId() % 30) +".png"));
+                label.setIcon(new ImageIcon( "images/contacts/face_"+ (contact.getId() % 30 +1) +".png"));
                 label.setText(contact.getName());
             } else {
                 label.setIcon(null);
