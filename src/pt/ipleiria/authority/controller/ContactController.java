@@ -17,8 +17,8 @@ import java.util.Iterator;
 public enum ContactController {
     CONTACT_CONTROLLER;
 
-    private static final String PATH = "C:\\ola";//"/Users/joaoz/Downloads/";
-    private static final int MY_CONTACT_ID = 1002;
+    private static final String PATH = "D:\\ola";//"/Users/joaoz/Downloads/";
+    private static final int MY_CONTACT_ID = 1;
 
     private static Contact myContact;
     private static ArrayList<Contact> contacts;
@@ -64,28 +64,50 @@ public enum ContactController {
 
     public static void writePublicKeyToFile(File file, Contact contact) throws IOException {
         File f = new File(file,"RSAPublic.txt");
-        while(true) {
-            boolean fileIsUnLocked = f.renameTo(f);
-            if (fileIsUnLocked) {
-                FileOutputStream fos = new FileOutputStream(f, true);
-                fos.write(String.valueOf(contact.getId()).getBytes());
-                fos.write("\t".getBytes());
 
-                fos.write(contact.getIpAddress().getBytes());
-                fos.write("\t".getBytes());
+        if(!f.exists()){
+            FileOutputStream fos = new FileOutputStream(f, true);
+            fos.write(String.valueOf(contact.getId()).getBytes());
+            fos.write("\t".getBytes());
 
-                fos.write(contact.getName().getBytes());
-                fos.write("\t".getBytes());
+            fos.write(contact.getIpAddress().getBytes());
+            fos.write("\t".getBytes());
 
-                fos.write(contact.getMAC().getBytes());
-                fos.write("\t".getBytes());
+            fos.write(contact.getName().getBytes());
+            fos.write("\t".getBytes());
 
-                fos.write(contact.getPublicKey());
-                fos.write("\n".getBytes());
+            fos.write(contact.getMAC().getBytes());
+            fos.write("\t".getBytes());
 
-                fos.flush();
-                fos.close();
-                break;
+            fos.write(contact.getPublicKey());
+            fos.write("\n".getBytes());
+
+            fos.flush();
+            fos.close();
+        } else {
+            while(true) {
+                boolean fileIsUnLocked = f.renameTo(f);
+                if (fileIsUnLocked) {
+                    FileOutputStream fos = new FileOutputStream(f, true);
+                    fos.write(String.valueOf(contact.getId()).getBytes());
+                    fos.write("\t".getBytes());
+
+                    fos.write(contact.getIpAddress().getBytes());
+                    fos.write("\t".getBytes());
+
+                    fos.write(contact.getName().getBytes());
+                    fos.write("\t".getBytes());
+
+                    fos.write(contact.getMAC().getBytes());
+                    fos.write("\t".getBytes());
+
+                    fos.write(contact.getPublicKey());
+                    fos.write("\n".getBytes());
+
+                    fos.flush();
+                    fos.close();
+                    break;
+                }
             }
         }
     }
@@ -94,19 +116,32 @@ public enum ContactController {
     //write hash map file
     public static void writeHashFile(File directory, Contact contact) throws IOException{
         File f = new File(directory,"Hash.txt");
-        while(true) {
-            boolean fileIsUnLocked = f.renameTo(f);
-            if (fileIsUnLocked) {
-                FileOutputStream fos = new FileOutputStream(f, true);
-                fos.write(contact.getIpAddress().getBytes());
-                fos.write("\t".getBytes());
 
-                fos.write(String.valueOf(contact.getId()).getBytes());
-                fos.write("\n".getBytes());
+        if(!f.exists()){
+            FileOutputStream fos = new FileOutputStream(f, true);
+            fos.write(contact.getIpAddress().getBytes());
+            fos.write("\t".getBytes());
 
-                fos.flush();
-                fos.close();
-                break;
+            fos.write(String.valueOf(contact.getId()).getBytes());
+            fos.write("\n".getBytes());
+
+            fos.flush();
+            fos.close();
+        } else{
+            while(true) {
+                boolean fileIsUnLocked = f.renameTo(f);
+                if (fileIsUnLocked) {
+                    FileOutputStream fos = new FileOutputStream(f, true);
+                    fos.write(contact.getIpAddress().getBytes());
+                    fos.write("\t".getBytes());
+
+                    fos.write(String.valueOf(contact.getId()).getBytes());
+                    fos.write("\n".getBytes());
+
+                    fos.flush();
+                    fos.close();
+                    break;
+                }
             }
         }
     }
@@ -115,14 +150,21 @@ public enum ContactController {
     public static void writePrivateKeyFile(File directory, Contact contact) throws IOException{
         File f = new File(directory,"RSAPrivate.txt");
 
-        while(true) {
-            boolean fileIsUnLocked = f.renameTo(f);
-            if (fileIsUnLocked) {
-                FileOutputStream fos = new FileOutputStream(f, true);
-                fos.write(contact.getPrivateKey());
-                fos.flush();
-                fos.close();
-                break;
+        if(!f.exists()){
+            FileOutputStream fos = new FileOutputStream(f, true);
+            fos.write(contact.getPrivateKey());
+            fos.flush();
+            fos.close();
+        } else {
+            while(true) {
+                boolean fileIsUnLocked = f.renameTo(f);
+                if (fileIsUnLocked) {
+                    FileOutputStream fos = new FileOutputStream(f, true);
+                    fos.write(contact.getPrivateKey());
+                    fos.flush();
+                    fos.close();
+                    break;
+                }
             }
         }
     }
@@ -193,8 +235,8 @@ public enum ContactController {
         ContactController.writeToFileContact(c);
     }
 
-    public static int getContactController() {
-        return MY_CONTACT_ID;
+    public static ContactController getContactController() {
+        return CONTACT_CONTROLLER;
     }
 
     public static Iterator<Contact> getContacts() {
