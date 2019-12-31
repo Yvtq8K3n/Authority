@@ -17,7 +17,7 @@ import java.util.Iterator;
 public enum ContactController {
     CONTACT_CONTROLLER;
 
-    private static final String PATH = "D:\\ola";//"/Users/joaoz/Downloads/";
+    private static final String PATH = "C:\\ola";//"/Users/joaoz/Downloads/";
     private static final int MY_CONTACT_ID = 1;
 
     private static Contact myContact;

@@ -24,12 +24,11 @@ public class ConnectionsPanel extends JPanel{
     public ConnectionsPanel(){
         initComponents();
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setMinimumSize(new Dimension(170, 50));
     }
 
     private void initComponents() {
         //Adds Tittle
-        lblTitle = new JLabel("Connections:");
+        lblTitle = new JLabel("Active:");
         lblTitle.setPreferredSize(new Dimension(75, 25));
         add(lblTitle);
 
