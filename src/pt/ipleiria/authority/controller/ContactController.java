@@ -207,14 +207,17 @@ public enum ContactController {
         //Adds contact to hash map
         String ipAddress = contact.getIpAddress();
         hashmap.put(ipAddress, contact);
-        if(!activeIpAddress.contains(ipAddress)) activeIpAddress.add(ipAddress);
-
-        //Adds to JTree newly Active Contact
-        connectionsPanel.updateJTree(connectionsPanel.contactsNode, contact, false);
+        if(!activeIpAddress.contains(ipAddress)){
+            activeIpAddress.add(ipAddress);
+            //Adds new Member
+            connectionsPanel.updateJTree(connectionsPanel.contactsNode, contact, false);
+        }else{
+            //Needs to update Jtree
+        }
     }
 
     public static Iterator<Contact> getActiveContacts() {
-        return new Iterator<Contact>() {
+        return new Iterator<>() {
             private Iterator<String> a = activeIpAddress.iterator();
 
             public boolean hasNext() {
