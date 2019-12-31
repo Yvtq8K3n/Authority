@@ -19,12 +19,9 @@ public class Sender implements Runnable{
     public Sender() {
         logger = Logger.getLogger(MainView.class.getName());
 
-
         //RSA - DES - TRIPLE DES
 
         try {
-            ContactController.getContactController();
-
             contact = ContactController.getMyContact_pbk();
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
@@ -73,8 +70,7 @@ public class Sender implements Runnable{
                 ObjectInputStream ois = new ObjectInputStream(is);
 
                 //Retrieve srcAddress
-                String srcAddress = connectionSocket.getInetAddress().toString();
-                srcAddress = srcAddress.replace("/","");
+                String srcAddress = getOutboundAddress(connectionSocket.getRemoteSocketAddress()).getHostAddress();
 
                 //Retrieves data
                 Contact contact = (Contact) ois.readObject();
@@ -120,22 +116,4 @@ public class Sender implements Runnable{
         return localAddress;
     }
 
-
-
-    /*
-
-String hostname = "Unknown";
-
-try
-{
-    InetAddress addr;
-    addr = InetAddress.getLocalHost();
-    hostname = addr.getHostName();
-}
-catch (UnknownHostException ex)
-{
-    System.out.println("Hostname can not be resolved");
-}
-
-     */
 }

@@ -12,8 +12,11 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Contact implements Serializable, Cloneable {
+    private static final int MY_CONTACT_ID = 1;
+    private static final AtomicInteger count = new AtomicInteger(1);
 
     private int id;
     private String name;
@@ -24,7 +27,7 @@ public class Contact implements Serializable, Cloneable {
 
     public Contact() {
         try {
-            this.id = 1;
+            this.id = MY_CONTACT_ID;
 
             InetAddress ip = getActiveInetAddress();
             this.name = ip.getLocalHost().getCanonicalHostName();
@@ -47,6 +50,7 @@ public class Contact implements Serializable, Cloneable {
     }
 
     public Contact(int id, String ipAddress, String name, String MAC, byte[] publicKey) {
+        if (id>count.get()) count.set(id);
         this.id = id;
         this.name = name;
         this.ipAddress = ipAddress;
@@ -54,9 +58,12 @@ public class Contact implements Serializable, Cloneable {
         this.publicKey = publicKey;
     }
 
-    public Contact(int id, String ipAddress, String name, String MAC, byte[] publicKey, byte[] privateKey) {
-        this(id, ipAddress, name, MAC, publicKey);
-        this.privateKey = privateKey;
+    public boolean isMyContact(){
+        return Contact.MY_CONTACT_ID == id;
+    }
+
+    public void updateId(){
+        this.id = count.incrementAndGet();
     }
 
     public int getId() {
@@ -174,6 +181,15 @@ public class Contact implements Serializable, Cloneable {
 
     @Override
     public String toString() {
-        return this.name;
+        return String.format("%s\t%s\t%s\t%s\t%s\n", id, ipAddress, name, MAC, new String(publicKey));
+    }
+
+
+    /** Compares if
+     * @param c Contact matches MAC and publicKey
+     * @return true
+     */
+    public boolean compareTo(Contact c) {
+        return MAC == c.getMAC() && publicKey == c.getPublicKey();
     }
 }

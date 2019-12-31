@@ -32,6 +32,7 @@ public class Receiver implements Runnable{
 
                 if (!srcAddress.equals(destAddress)){
                     Contact contact = (Contact) oos.readObject();
+                    contact.updateId();
                     contact.setIpAddress(srcAddress);
                     ContactController.addContact(contact);
 
