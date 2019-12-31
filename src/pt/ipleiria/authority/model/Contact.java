@@ -135,6 +135,10 @@ public class Contact implements Serializable, Cloneable{
         return privateKey;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
