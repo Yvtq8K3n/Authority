@@ -188,42 +188,42 @@ public enum ContactController {
         }
     }
 
-    public static void addContact(Contact contact) throws IOException {
+    public static void addContact(Contact newContact) throws IOException {
         boolean contains = false;
         for (Contact c : contacts){
-            if (contact.compareTo(c)){ //MAC PUBLIC
-                c.setName(contact.getName());
-                c.setIpAddress(contact.getIpAddress());
+            if (newContact.compareTo(c)){ //MAC PUBLIC
+                c.setName(newContact.getName());
+                c.setIpAddress(newContact.getIpAddress());
                 updateContactsFile(PATH, c);
                 contains = true;
             }
         }
 
         if (!contains) {
-            contact.updateId();
-            contacts.add(contact);
-            ContactController.writeToFileContact(contact);
+            newContact.updateId();
+            contacts.add(newContact);
+            ContactController.writeToFileContact(newContact);
         }
 
-        //Adds contact to hash map
+        //Adds newContact to hash map
         ConnectionsPanel.CustomJTree trConnections = connectionsPanel.getTrConnections();
 
-        String ipAddress = contact.getIpAddress();
+        String ipAddress = newContact.getIpAddress();
         if(!activeIpAddress.contains(ipAddress)){
             activeIpAddress.add(ipAddress);
             //Adds new Member
 
-            trConnections.addJTreeElement(trConnections.getContactsNode(), contact, false);
-            hashmap.put(ipAddress, contact);
+            trConnections.addJTreeElement(trConnections.getContactsNode(), newContact, false);
+            hashmap.put(ipAddress, newContact);
         }else{
-            //Retrieve contact on hash map
-            Contact c = hashmap.get(ipAddress);
+            //Retrieve newContact on hash map
+            Contact oldContact = hashmap.get(ipAddress);
 
             //Updates JTreeElement
-            trConnections.updateJTreeElement(trConnections.getContactsNode(), contact);
+            trConnections.updateJTreeElement(trConnections.getContactsNode(), oldContact, newContact);
 
-            //Rewrite contact to hash map
-            hashmap.put(ipAddress, contact);
+            //Rewrite newContact to hash map
+            hashmap.put(ipAddress, newContact);
         }
     }
 

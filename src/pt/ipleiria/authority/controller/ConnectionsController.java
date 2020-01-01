@@ -31,6 +31,7 @@ public enum ConnectionsController {
         connections.add(connection);
 
         ConnectionsPanel.CustomJTree trConnections = connectionsPanel.getTrConnections();
+
         //Adds to JTree new Connection
         trConnections.addJTreeElement(trConnections.getConnectionsNode(), connection, true);
     }

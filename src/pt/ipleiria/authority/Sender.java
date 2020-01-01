@@ -51,14 +51,30 @@ public class Sender implements Runnable{
                     PORT
             );
             UDPClientSocket.send(packet);
-            //Used for testing
-            /*contact.updateId();
-            if (contact.getId()>2) {
-                contact.setName("God"+contact.getId());
-                contact.setMAC("asdasdasdasdassd");
-            }
-            System.out.println(contact);
-            ContactController.addContact(contact);*/
+
+            /*
+            try {
+               Contact c  = (Contact) contact.clone();
+                c.updateId();
+                c.setName("God"+c.getId());
+                c.setIpAddress("asdoasdpsadasdsad"+c.getId());
+                c.setMAC("aiosjdasoijdpasdasdkp"+c.getId());
+
+                System.out.println(c);
+                ContactController.addContact(c);
+
+                Contact c1  = (Contact) contact.clone();
+                c1.updateId();
+                c1.setName("God"+c1.getId());
+                c1.setIpAddress("asdoasdpsadasdsad"+c1.getId());
+                c1.setMAC("aiosjdasoijdpasdasdkp"+c1.getId());
+
+                System.out.println(c1);
+                ContactController.addContact(c1);
+
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }*/
 
 
             Sender.logger.info("Introduction - Success");
@@ -82,7 +98,6 @@ public class Sender implements Runnable{
 
                 //Retrieves data
                 Contact contact = (Contact) ois.readObject();
-                contact.updateId();
                 contact.setIpAddress(srcAddress);
                 ContactController.addContact(contact);
 

@@ -1,5 +1,6 @@
 package pt.ipleiria.authority.view;
 
+import javafx.scene.control.SelectionModel;
 import pt.ipleiria.authority.controller.ConnectionsController;
 import pt.ipleiria.authority.controller.ContactController;
 import pt.ipleiria.authority.model.Connection;
@@ -15,7 +16,6 @@ import java.util.Iterator;
 public class ConnectionsPanel extends JPanel{
 
     private JLabel lblTitle;
-
     public CustomJTree trConnections;
 
     public ConnectionsPanel(){
@@ -52,8 +52,9 @@ public class ConnectionsPanel extends JPanel{
             //Set Properties
             setRootVisible(false);
             setBorder(BorderFactory.createEtchedBorder(Color.BLACK,Color.BLACK));
-            setCellRenderer(new CustomTreeCellRenderer());
 
+            CustomTreeCellRenderer cellRenderer = new CustomTreeCellRenderer();
+            setCellRenderer(cellRenderer);
         }
 
         private void initComponents(DefaultMutableTreeNode root){
@@ -62,7 +63,7 @@ public class ConnectionsPanel extends JPanel{
             setModel(model);
 
             //Adds ConnectionsTab
-            connectionsNode = new DefaultMutableTreeNode("Connections", true);
+            connectionsNode = new DefaultMutableTreeNode("Channels", true);
             root.add(connectionsNode);
 
             //Adds ContactsTab
@@ -90,14 +91,13 @@ public class ConnectionsPanel extends JPanel{
                 @Override
                 public void valueChanged(TreeSelectionEvent selection) {
                     DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode)selection.getPath().getLastPathComponent();
+
                     if(selectedNode.isLeaf()) {
                         Object o = selectedNode.getUserObject();
-                        System.out.println(o instanceof Contact);
                         if (o instanceof Connection){
 
                         }else if (o instanceof Contact){
                             ConnectionsController.addConnection((Contact) o);
-                            System.out.println(selectedNode.getUserObject());
                         }
 
                     }
@@ -107,6 +107,38 @@ public class ConnectionsPanel extends JPanel{
 
         }
 
+        protected class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
+            private JLabel label;
+
+            CustomTreeCellRenderer() {
+                label = new JLabel();
+            }
+
+            @Override
+            public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded,
+                    boolean leaf, int row, boolean hasFocus) {
+                Object o =  ((DefaultMutableTreeNode) value).getUserObject();
+
+                //Remove previous selection
+                label.setBorder(null);
+
+                if(o == null || o instanceof String){
+                    label.setIcon(null);
+                    label.setText("" + value);
+                }else {
+                    if (selected) label.setBorder(BorderFactory.createEtchedBorder(Color.BLACK,Color.BLACK));
+                    if (o instanceof Connection) {
+                        label.setIcon(new ImageIcon("images/shoutface32x32.png"));
+                        label.setText("Connection");
+                    } else if (o instanceof Contact) {
+                        Contact contact = (Contact) o;
+                        label.setIcon(new ImageIcon("images/contacts/face_" + (contact.getId() % 30 + 1) + ".png"));
+                        label.setText(contact.getName());
+                    }
+                }
+                return label;
+            }
+        }
 
         public void addJTreeElement(DefaultMutableTreeNode root, Object value, boolean select){
             DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(value);
@@ -119,14 +151,15 @@ public class ConnectionsPanel extends JPanel{
 
             //Select new node?
             if (select) trConnections.setSelectionPath(new TreePath(newNode.getPath()));
+            //trConnections.updateUI();
         }
 
-        public void updateJTreeElement(DefaultMutableTreeNode contactsNode, Object newContact) {
+        public void updateJTreeElement(DefaultMutableTreeNode contactsNode, Object oldObj, Object newObj) {
             for (int i = 0; i < contactsNode.getChildCount(); i++) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) model.getChild(contactsNode, i);
-                if (newContact != null && newContact.getClass() == node.getUserObject().getClass()){
+                if (oldObj != null && oldObj.getClass() == node.getUserObject().getClass()){
                     Object nodeObject = node.getUserObject();
-                    if (newContact.equals(nodeObject)) node.setUserObject(newContact);
+                    if (oldObj.equals(nodeObject)) node.setUserObject(newObj);
                 }
 
             }
@@ -142,30 +175,6 @@ public class ConnectionsPanel extends JPanel{
             return contactsNode;
         }
 
-        protected class CustomTreeCellRenderer implements TreeCellRenderer {
-            private JLabel label;
-
-            CustomTreeCellRenderer() {
-                label = new JLabel();
-            }
-
-            @Override
-            public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded,
-                                                          boolean leaf, int row, boolean hasFocus) {
-                Object o = ((DefaultMutableTreeNode) value).getUserObject();
-                if (o instanceof Connection){
-
-                }else if (o instanceof Contact) {
-                    Contact contact = (Contact) o;
-                    label.setIcon(new ImageIcon( "images/contacts/face_"+ (contact.getId() % 30 +1) +".png"));
-                    label.setText(contact.getName());
-                } else {
-                    label.setIcon(null);
-                    label.setText("" + value);
-                }
-                return label;
-            }
-        }
     }
 
     public CustomJTree getTrConnections() {
