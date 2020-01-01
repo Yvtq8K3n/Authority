@@ -4,9 +4,10 @@ import pt.ipleiria.authority.model.Contact;
 import pt.ipleiria.authority.view.ConnectionsPanel;
 
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
+import javax.swing.tree.DefaultTreeModel;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 
 public enum ContactController {
     CONTACT_CONTROLLER;
@@ -205,14 +206,24 @@ public enum ContactController {
         }
 
         //Adds contact to hash map
+        ConnectionsPanel.CustomJTree trConnections = connectionsPanel.getTrConnections();
+
         String ipAddress = contact.getIpAddress();
-        hashmap.put(ipAddress, contact);
         if(!activeIpAddress.contains(ipAddress)){
             activeIpAddress.add(ipAddress);
             //Adds new Member
-            connectionsPanel.updateJTree(connectionsPanel.contactsNode, contact, false);
+
+            trConnections.addJTreeElement(trConnections.getContactsNode(), contact, false);
+            hashmap.put(ipAddress, contact);
         }else{
-            //Needs to update Jtree
+            //Retrieve contact on hash map
+            Contact c = hashmap.get(ipAddress);
+
+            //Updates JTreeElement
+            trConnections.updateJTreeElement(trConnections.getContactsNode(), contact);
+
+            //Rewrite contact to hash map
+            hashmap.put(ipAddress, contact);
         }
     }
 

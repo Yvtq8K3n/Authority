@@ -51,6 +51,15 @@ public class Sender implements Runnable{
                     PORT
             );
             UDPClientSocket.send(packet);
+            //Used for testing
+            /*contact.updateId();
+            if (contact.getId()>2) {
+                contact.setName("God"+contact.getId());
+                contact.setMAC("asdasdasdasdassd");
+            }
+            System.out.println(contact);
+            ContactController.addContact(contact);*/
+
 
             Sender.logger.info("Introduction - Success");
         } catch (SocketException e) {

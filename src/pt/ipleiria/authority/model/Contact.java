@@ -9,9 +9,7 @@ import java.nio.channels.SocketChannel;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.Enumeration;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Contact implements Serializable, Cloneable {
@@ -192,4 +190,13 @@ public class Contact implements Serializable, Cloneable {
     public boolean compareTo(Contact c) {
         return MAC == c.getMAC() && publicKey == c.getPublicKey();
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Contact contact = (Contact) object;
+        return id == contact.id;
+    }
 }
+

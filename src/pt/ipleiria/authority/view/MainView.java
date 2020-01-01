@@ -50,7 +50,7 @@ public class MainView extends JFrame {
         add(panel);
     }
 
-    public static void main(String[] args) throws InvalidKeySpecException, NoSuchAlgorithmException {
+    public static void main(String[] args) {
         new MainView();
 
         Sender sender = new Sender();
