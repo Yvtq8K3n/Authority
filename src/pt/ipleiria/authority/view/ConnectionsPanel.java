@@ -128,22 +128,24 @@ public class ConnectionsPanel extends JPanel{
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
                 Object o =  node.getUserObject();
 
-                //Remove previous selection
                 label.setBackground(null);
-
-                if(o == null || o instanceof String){
-                    label.setIcon(null);
-                    label.setText("" + value);
-                }else {
-                    if (selected) label.setBackground(UIManager.getColor("Button.shadow"));
-                    if (o instanceof Connection) {
-                        Contact contact = ((Connection) o).getContact();
-                        label.setIcon(new ImageIcon("images/contacts/face_" + (contact.getId() % 30 + 1) + ".png"));
-                        label.setText(contact.getName());
-                    } else if (o instanceof Contact) {
-                        Contact contact = (Contact) o;
-                        label.setIcon(new ImageIcon("images/contacts/face_" + (contact.getId() % 30 + 1) + ".png"));
-                        label.setText(contact.getName());
+                label.setIcon(null);
+                label.setText("" + value);
+                if(o != null ){
+                    if (o instanceof String){
+                        if (o.equals("Channels")) label.setIcon(new ImageIcon("images/channels32x32.png"));
+                        else if (o.equals("Contacts")) label.setIcon(new ImageIcon("images/contacts32x32.png"));
+                    }else {
+                        if (selected) label.setBackground(UIManager.getColor("Button.shadow"));
+                        if (o instanceof Connection) {
+                            Contact contact = ((Connection) o).getContact();
+                            label.setIcon(new ImageIcon("images/contacts/face_" + (contact.getId() % 30 + 1) + ".png"));
+                            label.setText(contact.getName());
+                        } else if (o instanceof Contact) {
+                            Contact contact = (Contact) o;
+                            label.setIcon(new ImageIcon("images/contacts/face_" + (contact.getId() % 30 + 1) + ".png"));
+                            label.setText(contact.getName());
+                        }
                     }
                 }
                 return label;
@@ -183,14 +185,17 @@ public class ConnectionsPanel extends JPanel{
             @Override
             public void mousePressed(MouseEvent e) {
                 JTree tree=(JTree) e.getSource();
-                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent();
+                TreePath treePath = tree.getSelectionPath();
+                if (treePath !=null) {
+                    DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) treePath.getLastPathComponent();
 
-                if(selectedNode.isLeaf()) {
-                    Object o = selectedNode.getUserObject();
-                    if (o instanceof Connection){
+                    if (selectedNode!=null && selectedNode.isLeaf()) {
+                        Object o = selectedNode.getUserObject();
+                        if (o instanceof Connection) {
 
-                    }else if (o instanceof Contact){
-                        ConnectionsController.addConnection((Contact) o);
+                        } else if (o instanceof Contact) {
+                            ConnectionsController.addConnection((Contact) o);
+                        }
                     }
                 }
             }
