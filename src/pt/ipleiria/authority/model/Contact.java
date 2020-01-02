@@ -179,7 +179,7 @@ public class Contact implements Serializable, Cloneable {
 
     @Override
     public String toString() {
-        return String.format("%s\t%s\t%s\t%s\t%s\n", id, ipAddress, name, MAC, new String(publicKey));
+        return String.format("%s\t%s\t%s\t%s\t%s", id, ipAddress, name, MAC, new String(publicKey));
     }
 
 

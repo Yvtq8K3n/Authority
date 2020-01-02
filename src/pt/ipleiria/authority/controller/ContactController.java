@@ -120,6 +120,9 @@ public enum ContactController {
         if(!f.exists()){
             FileOutputStream fos = new FileOutputStream(f, true);
             fos.write(contact.toString().getBytes());
+            fos.write("\n".getBytes());
+
+            System.out.println("hey");
 
             fos.flush();
             fos.close();
@@ -129,6 +132,7 @@ public enum ContactController {
                 if (fileIsUnLocked) {
                     FileOutputStream fos = new FileOutputStream(f, true);
                     fos.write(contact.toString().getBytes());
+                    fos.write("\n".getBytes());
 
                     fos.flush();
                     fos.close();
@@ -169,9 +173,9 @@ public enum ContactController {
             while ((line = file.readLine()) != null) {
                 String[] array = line.split("\t");
                 int id = Integer.parseInt(array[0]);
+
                 if(id == contact.getId()){
-                    line +=  contact.toString();
-                    //Needs to finish
+                    line = contact.toString();
                 }
                 inputBuffer.append(line);
                 inputBuffer.append('\n');
@@ -179,7 +183,7 @@ public enum ContactController {
             file.close();
 
             // write the new string with the replaced line OVER the same file
-            FileOutputStream fileOut = new FileOutputStream("notes.txt");
+            FileOutputStream fileOut = new FileOutputStream(path+"/RSAPublic.txt");
             fileOut.write(inputBuffer.toString().getBytes());
             fileOut.close();
 
@@ -258,5 +262,10 @@ public enum ContactController {
 
     public static Iterator<Contact> getContacts() {
         return contacts.iterator();
+    }
+
+    public static void updateMyContactName(String name) throws IOException {
+        myContact.setName(name);
+        updateContactsFile(PATH, myContact);
     }
 }

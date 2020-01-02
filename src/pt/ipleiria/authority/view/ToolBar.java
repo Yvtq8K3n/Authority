@@ -1,15 +1,18 @@
 package pt.ipleiria.authority.view;
 
 import pt.ipleiria.authority.Sender;
+import pt.ipleiria.authority.controller.ContactController;
+import pt.ipleiria.authority.model.Contact;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class ToolBar extends JToolBar{
 
     private JButton btnShout;
-    private JButton btn2;
+    private JButton btnProfile;
     private JButton btn3;
 
     public ToolBar() {
@@ -25,11 +28,28 @@ public class ToolBar extends JToolBar{
                 Sender.broadcast();
             }
         });
-        //btn2 =  new JButton(new ImageIcon("images/shoutface32x32.png"));
-        //btn3 = new JButton(new ImageIcon("images/shoutface32x32.png"));
+
+        btnProfile =  new JButton(new ImageIcon("images/profile32x32.png"));
+        btnProfile.setToolTipText("Apply Changes to your profile");
+        btnProfile.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String name = JOptionPane.showInputDialog( "What's your nickname?");
+                if(name!=null) {
+                    try {
+                        ContactController.updateMyContactName(name);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        });
+
+
+
 
         add(btnShout);
-        //add(btn2);
+        add(btnProfile);
         //add(btn3);
     }
 }

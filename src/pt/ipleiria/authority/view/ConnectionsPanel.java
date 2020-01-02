@@ -117,9 +117,7 @@ public class ConnectionsPanel extends JPanel{
             CustomTreeCellRenderer() {
                 label = new JLabel();
                 label.setOpaque(true);
-                setMinimumSize(new Dimension(200, 200));
-                setPreferredSize(new Dimension(200, 200));
-                setMaximumSize(new Dimension(200, 200));
+                label.setPreferredSize(new Dimension(150, 32));
             }
 
             @Override
@@ -128,9 +126,12 @@ public class ConnectionsPanel extends JPanel{
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
                 Object o =  node.getUserObject();
 
+                //Sets default properties
                 label.setBackground(null);
                 label.setIcon(null);
                 label.setText("" + value);
+
+                //Analyse node and apply changes accordingly
                 if(o != null ){
                     if (o instanceof String){
                         if (o.equals("Channels")) label.setIcon(new ImageIcon("images/channels32x32.png"));
@@ -143,8 +144,8 @@ public class ConnectionsPanel extends JPanel{
                             label.setText(contact.getName());
                         } else if (o instanceof Contact) {
                             Contact contact = (Contact) o;
+                            label.setText(contact.getName() +"#"+contact.getId());
                             label.setIcon(new ImageIcon("images/contacts/face_" + (contact.getId() % 30 + 1) + ".png"));
-                            label.setText(contact.getName());
                         }
                     }
                 }
