@@ -7,10 +7,15 @@ import pt.ipleiria.authority.model.Connection;
 import pt.ipleiria.authority.model.Contact;
 
 import javax.swing.*;
+import javax.swing.event.MouseInputAdapter;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
 import java.util.Enumeration;
 import java.util.Iterator;
 
@@ -88,24 +93,11 @@ public class ConnectionsPanel extends JPanel{
             //Adds Select Model
             DefaultTreeSelectionModel sModel = new DefaultTreeSelectionModel();
             sModel.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-            addTreeSelectionListener(new TreeSelectionListener() {
-                @Override
-                public void valueChanged(TreeSelectionEvent selection) {
-                    DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode)selection.getPath().getLastPathComponent();
+            addMouseListener(mouseInputAdapter);
+            addMouseMotionListener(mouseInputAdapter);
 
-                    if(selectedNode.isLeaf()) {
-                        Object o = selectedNode.getUserObject();
-                        if (o instanceof Connection){
 
-                        }else if (o instanceof Contact){
-                            ConnectionsController.addConnection((Contact) o);
-                        }
-
-                    }
-                }
-            });
             setSelectionModel(sModel);
-
         }
 
         public void setSelectedByValue(Object object){
@@ -124,24 +116,30 @@ public class ConnectionsPanel extends JPanel{
 
             CustomTreeCellRenderer() {
                 label = new JLabel();
+                label.setOpaque(true);
+                setMinimumSize(new Dimension(200, 200));
+                setPreferredSize(new Dimension(200, 200));
+                setMaximumSize(new Dimension(200, 200));
             }
 
             @Override
             public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded,
                     boolean leaf, int row, boolean hasFocus) {
-                Object o =  ((DefaultMutableTreeNode) value).getUserObject();
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+                Object o =  node.getUserObject();
 
                 //Remove previous selection
-                label.setBorder(null);
+                label.setBackground(null);
 
                 if(o == null || o instanceof String){
                     label.setIcon(null);
                     label.setText("" + value);
                 }else {
-                    if (selected) label.setBorder(BorderFactory.createEtchedBorder(Color.BLACK,Color.BLACK));
+                    if (selected) label.setBackground(UIManager.getColor("Button.shadow"));
                     if (o instanceof Connection) {
-                        label.setIcon(new ImageIcon("images/shoutface32x32.png"));
-                        label.setText("Connection");
+                        Contact contact = ((Connection) o).getContact();
+                        label.setIcon(new ImageIcon("images/contacts/face_" + (contact.getId() % 30 + 1) + ".png"));
+                        label.setText(contact.getName());
                     } else if (o instanceof Contact) {
                         Contact contact = (Contact) o;
                         label.setIcon(new ImageIcon("images/contacts/face_" + (contact.getId() % 30 + 1) + ".png"));
@@ -166,9 +164,9 @@ public class ConnectionsPanel extends JPanel{
             //trConnections.updateUI();
         }
 
-        public void updateJTreeElement(DefaultMutableTreeNode contactsNode, Object oldObj, Object newObj) {
-            for (int i = 0; i < contactsNode.getChildCount(); i++) {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) model.getChild(contactsNode, i);
+        public void updateJTreeElement(DefaultMutableTreeNode parentNode, Object oldObj, Object newObj) {
+            for (int i = 0; i < parentNode.getChildCount(); i++) {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) model.getChild(parentNode, i);
                 if (oldObj != null && oldObj.getClass() == node.getUserObject().getClass()){
                     Object nodeObject = node.getUserObject();
                     if (oldObj.equals(nodeObject)) node.setUserObject(newObj);
@@ -176,8 +174,48 @@ public class ConnectionsPanel extends JPanel{
 
             }
 
-            trConnections.updateUI();
+            ((DefaultTreeModel)trConnections.getModel()).reload(parentNode);
         }
+
+        final MouseInputAdapter mouseInputAdapter = new MouseInputAdapter() {
+            int lastSelected=-1;
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                JTree tree=(JTree) e.getSource();
+                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent();
+
+                if(selectedNode.isLeaf()) {
+                    Object o = selectedNode.getUserObject();
+                    if (o instanceof Connection){
+
+                    }else if (o instanceof Contact){
+                        ConnectionsController.addConnection((Contact) o);
+                    }
+                }
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e){
+                //Clear selection
+                JTree tree=(JTree) e.getSource();
+                lastSelected=-1;
+                tree.clearSelection();
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e){
+                JTree tree=(JTree) e.getSource();
+                int selRow=tree.getRowForLocation(e.getX(), e.getY());
+
+                //Selects new node
+                if(selRow!=lastSelected){
+                    tree.setSelectionRow(selRow);
+                    lastSelected=selRow;
+                }
+
+            }
+        };
 
         public DefaultMutableTreeNode getConnectionsNode() {
             return connectionsNode;
@@ -186,7 +224,6 @@ public class ConnectionsPanel extends JPanel{
         public DefaultMutableTreeNode getContactsNode() {
             return contactsNode;
         }
-
     }
 
     public CustomJTree getTrConnections() {
