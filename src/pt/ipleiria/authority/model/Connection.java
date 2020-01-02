@@ -34,10 +34,6 @@ public class Connection {
         }
     }
 
-    public Contact getContact() {
-        return contact;
-    }
-
     public void setContact(Contact contact) {
         this.contact = contact;
     }
