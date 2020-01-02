@@ -11,6 +11,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.*;
 import java.awt.*;
+import java.util.Enumeration;
 import java.util.Iterator;
 
 public class ConnectionsPanel extends JPanel{
@@ -105,6 +106,17 @@ public class ConnectionsPanel extends JPanel{
             });
             setSelectionModel(sModel);
 
+        }
+
+        public void setSelectedByValue(Object object){
+            DefaultMutableTreeNode parent = (DefaultMutableTreeNode) model.getRoot();
+            Enumeration e = parent.depthFirstEnumeration();
+            while(e.hasMoreElements()){
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
+                if (object.equals(node.getUserObject())) {
+                  trConnections.setSelectionPath(new TreePath(node.getPath()));
+                }
+            }
         }
 
         protected class CustomTreeCellRenderer extends DefaultTreeCellRenderer {

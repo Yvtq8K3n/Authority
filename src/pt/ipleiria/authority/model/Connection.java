@@ -7,4 +7,8 @@ public class Connection {
     public Connection(Contact c){
         this.contact =  c;
     }
+
+    public Contact getContact() {
+        return contact;
+    }
 }

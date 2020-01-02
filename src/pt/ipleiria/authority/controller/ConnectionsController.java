@@ -8,6 +8,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.swing.tree.TreePath;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -27,13 +28,30 @@ public enum ConnectionsController {
     }
 
     public static void addConnection(Contact c){
-        Connection connection = new Connection(c);
-        connections.add(connection);
+        boolean contains = false;
+        Connection connection = null;
+
+        for (Connection con : connections){
+            if (c.equals(con.getContact())){
+                contains = true;
+                connection = con;
+                break;
+            }
+        }
 
         ConnectionsPanel.CustomJTree trConnections = connectionsPanel.getTrConnections();
+        if (!contains) {
+            connection = new Connection(c);
+            connections.add(connection);
 
-        //Adds to JTree new Connection
-        trConnections.addJTreeElement(trConnections.getConnectionsNode(), connection, true);
+            //Adds to JTree new Connection
+            trConnections.addJTreeElement(trConnections.getConnectionsNode(), connection, true);
+        }else {
+            //Force selection, heavy operation
+            connectionsPanel.getTrConnections().setSelectedByValue(connection);
+        }
+
+
     }
 
     public byte[] encrypt(byte[] data, PublicKey key) throws BadPaddingException, IllegalBlockSizeException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException {
