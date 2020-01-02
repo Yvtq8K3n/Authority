@@ -52,15 +52,12 @@ public class Sender implements Runnable{
             );
             UDPClientSocket.send(packet);
 
-            /*
             try {
                Contact c  = (Contact) contact.clone();
                 c.updateId();
                 c.setName("God"+c.getId());
                 c.setIpAddress("asdoasdpsadasdsad"+c.getId());
                 c.setMAC("aiosjdasoijdpasdasdkp"+c.getId());
-
-                System.out.println(c);
                 ContactController.addContact(c);
 
                 Contact c1  = (Contact) contact.clone();
@@ -68,13 +65,11 @@ public class Sender implements Runnable{
                 c1.setName("God"+c1.getId());
                 c1.setIpAddress("asdoasdpsadasdsad"+c1.getId());
                 c1.setMAC("aiosjdasoijdpasdasdkp"+c1.getId());
-
-                System.out.println(c1);
                 ContactController.addContact(c1);
 
             } catch (CloneNotSupportedException e) {
                 e.printStackTrace();
-            }*/
+            }
 
 
             Sender.logger.info("Introduction - Success");

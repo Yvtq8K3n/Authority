@@ -53,4 +53,8 @@ public class Connection {
     public SecretKey getSecretKeyClass() {
         return new SecretKeySpec(secretKey, 0, secretKey.length, "AES");
     }
+
+    public Contact getContact() {
+        return contact;
+    }
 }
