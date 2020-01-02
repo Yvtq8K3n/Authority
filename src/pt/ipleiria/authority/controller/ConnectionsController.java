@@ -4,6 +4,12 @@ import pt.ipleiria.authority.model.Connection;
 import pt.ipleiria.authority.model.Contact;
 import pt.ipleiria.authority.view.ConnectionsPanel;
 
+import javax.crypto.*;
+import javax.crypto.spec.SecretKeySpec;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -14,6 +20,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Iterator;
 import java.util.List;
 
@@ -23,8 +30,16 @@ public enum ConnectionsController {
     private static List<Connection> connections;
     private static ConnectionsPanel connectionsPanel;
 
+    private static SecretKey secretKey;
+    private static byte[] key;
+
     static {
         connections = new ArrayList<>();
+
+        for (Connection c: connections) {
+            keyExchange(c);
+        }
+
     }
 
     public static void addConnection(Contact c){
@@ -54,16 +69,70 @@ public enum ConnectionsController {
 
     }
 
-    public byte[] encrypt(byte[] data, PublicKey key) throws BadPaddingException, IllegalBlockSizeException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException {
+    public static byte[] encrypt(byte[] data, PublicKey key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         cipher.init(Cipher.ENCRYPT_MODE, key);
         return cipher.doFinal(data);
     }
 
-    public byte[] decrypt(byte[] data, PrivateKey key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+    public static byte[] decrypt(byte[] data, PrivateKey key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         cipher.init(Cipher.DECRYPT_MODE, key);
         return cipher.doFinal(data);
+    }
+
+    public static byte[] encrypt(String data, SecretKey secretKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS1Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        return cipher.doFinal(data.getBytes());
+    }
+
+    public static String decrypt(byte[] data, SecretKey secretKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS1Padding");
+        cipher.init(Cipher.DECRYPT_MODE, secretKey);
+        return Base64.getEncoder().encodeToString(cipher.doFinal(data));
+    }
+
+    public static void sendMessage(String message, Connection connection){
+        try {
+            Contact c = ContactController.getMyContact();
+            //encrypt with contact pub key, then secret key
+            encrypt(encrypt(message, connection.getSecretKeyClass()), c.getPublicKeyClass());
+
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String receiveMessage(byte[] response, Connection connection){
+        try {
+            Contact c = ContactController.getMyContact();
+            //decrypt with secret then private
+            return decrypt(decrypt(response,c.getPrivateKeyClass()), connection.getSecretKeyClass());
+
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    //exchange key method
+    public static void keyExchange(Connection connection){
+        try {
+            Contact myContact = ContactController.getMyContact_pbk();
+
+            //need to check connection
+            if (!connection.hasSecretKey()){
+                //generate key
+                connection.generateKey();
+            }
+
+            //change secret key
+            encrypt(connection.getSecretKey(), myContact.getPublicKeyClass());
+
+        } catch (CloneNotSupportedException | InvalidKeySpecException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
     }
 
     public static Iterator<Connection> getConnections() {
