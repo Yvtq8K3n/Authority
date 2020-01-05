@@ -135,7 +135,7 @@ public class ConnectionsPanel extends JPanel{
                         if (o instanceof Connection) {
                             Contact contact = ((Connection) o).getContact();
                             label.setIcon(new ImageIcon("images/contacts/face_" + (contact.getId() % 30 + 1) + ".png"));
-                            label.setText(contact.getName());
+                            label.setText(contact.getName() +"#"+contact.getId());
                         } else if (o instanceof Contact) {
                             Contact contact = (Contact) o;
                             label.setText(contact.getName() +"#"+contact.getId());
