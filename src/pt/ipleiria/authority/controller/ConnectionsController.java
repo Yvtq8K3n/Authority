@@ -37,7 +37,7 @@ public enum ConnectionsController {
         chatPanels = new HashMap<>();
 
         for (Connection c: connections) {
-            keyExchange(c);
+            sendKey(c);
         }
 
     }
@@ -101,9 +101,9 @@ public enum ConnectionsController {
         try {
             Contact c = ContactController.getMyContact();
             //encrypt with contact pub key, then secret key
-            encrypt(encrypt(message, connection.getSecretKeyClass()), c.getPublicKeyClass());
+            encrypt(message, connection.getSecretKeyClass());
 
-        } catch (InvalidKeySpecException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
         }
     }
@@ -112,16 +112,16 @@ public enum ConnectionsController {
         try {
             Contact c = ContactController.getMyContact();
             //decrypt with secret then private
-            return decrypt(decrypt(response,c.getPrivateKeyClass()), connection.getSecretKeyClass());
+            return decrypt(response, connection.getSecretKeyClass());
 
-        } catch (InvalidKeySpecException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    //exchange key method
-    public static void keyExchange(Connection connection){
+    //send key method
+    public static void sendKey(Connection connection){
         try {
             Contact myContact = ContactController.getMyContact_pbk();
 
@@ -137,6 +137,20 @@ public enum ConnectionsController {
         } catch (CloneNotSupportedException | InvalidKeySpecException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
         }
+    }
+
+    //receive key method
+    public static byte[] receiveKey(byte [] key){
+        try {
+            Contact myContact = ContactController.getMyContact();
+
+            //change secret key
+            return decrypt(key, myContact.getPrivateKeyClass());
+
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
