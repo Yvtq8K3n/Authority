@@ -1,40 +1,40 @@
 package pt.ipleiria.authority.controller;
 
+import pt.ipleiria.authority.Sender;
 import pt.ipleiria.authority.model.Connection;
 import pt.ipleiria.authority.model.Contact;
+import pt.ipleiria.authority.view.ChannelChatView;
 import pt.ipleiria.authority.view.ConnectionsPanel;
+import pt.ipleiria.authority.view.MainView;
 
 import javax.crypto.*;
-import javax.crypto.spec.SecretKeySpec;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
-import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.swing.tree.TreePath;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
 
 public enum ConnectionsController {
     CONNECTIONS_CONTROLLER;
 
+    private static MainView view;
+
+    private static Connection activeConnection;
     private static List<Connection> connections;
-    private static ConnectionsPanel connectionsPanel;
+    private static HashMap<Connection, ChannelChatView> chatPanels;
 
     private static SecretKey secretKey;
     private static byte[] key;
 
     static {
         connections = new ArrayList<>();
+        chatPanels = new HashMap<>();
 
         for (Connection c: connections) {
             keyExchange(c);
@@ -54,19 +54,23 @@ public enum ConnectionsController {
             }
         }
 
-        ConnectionsPanel.CustomJTree trConnections = connectionsPanel.getTrConnections();
+        ConnectionsPanel.CustomJTree trConnections = view.connectionsPanel.getTrConnections();
         if (!contains) {
             connection = new Connection(c);
             connections.add(connection);
 
             //Adds to JTree new Connection
             trConnections.addJTreeElement(trConnections.getConnectionsNode(), connection, true);
+
+            //Create respective view
+            ChannelChatView chat = new ChannelChatView();
+            chatPanels.put(connection, chat);
         }else {
             //Force selection, heavy operation
-            connectionsPanel.getTrConnections().setSelectedByValue(connection);
+            view.connectionsPanel.getTrConnections().setSelectedByValue(connection);
         }
 
-
+        updateChannelChatView(connection);
     }
 
     public static byte[] encrypt(byte[] data, PublicKey key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
@@ -135,11 +139,28 @@ public enum ConnectionsController {
         }
     }
 
-    public static Iterator<Connection> getConnections() {
-        return connections.iterator();
+
+    public static void sendMessage(){
+        if(activeConnection!=null){
+            Sender.sendMessage();
+        }
     }
 
-    public static void setConnectionsPanel(ConnectionsPanel panel){
-        connectionsPanel = panel;
+
+    public static void updateChannelChatView(Connection connection){
+        activeConnection = connection;
+
+        //Retrieves view and displays it
+        ChannelChatView chat = chatPanels.get(connection);
+        chat.getLblTitle().setText(connection.getContact().getName());
+        view.splitPane.setRightComponent(chat);
+    }
+
+    public static void setView(MainView view) {
+        ConnectionsController.view = view;
+    }
+
+    public static Iterator<Connection> getConnections() {
+        return connections.iterator();
     }
 }

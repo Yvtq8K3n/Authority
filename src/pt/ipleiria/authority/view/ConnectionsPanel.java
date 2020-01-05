@@ -1,6 +1,5 @@
 package pt.ipleiria.authority.view;
 
-import javafx.scene.control.SelectionModel;
 import pt.ipleiria.authority.controller.ConnectionsController;
 import pt.ipleiria.authority.controller.ContactController;
 import pt.ipleiria.authority.model.Connection;
@@ -8,14 +7,9 @@ import pt.ipleiria.authority.model.Contact;
 
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseMotionListener;
 import java.util.Enumeration;
 import java.util.Iterator;
 
@@ -193,7 +187,7 @@ public class ConnectionsPanel extends JPanel{
                     if (selectedNode!=null && selectedNode.isLeaf()) {
                         Object o = selectedNode.getUserObject();
                         if (o instanceof Connection) {
-
+                            ConnectionsController.updateChannelChatView((Connection) o);
                         } else if (o instanceof Contact) {
                             ConnectionsController.addConnection((Contact) o);
                         }

@@ -80,6 +80,19 @@ public class Sender implements Runnable{
         }
     }
 
+    /**
+     * This method thought the protocol TCP, sends a message to
+     * the network
+     */
+    public static void sendMessage() {
+        /*if (!txtEntryField.getText().isEmpty()) {
+            txtChatArea.append("\n Bob: " + txtEntryField.getText());
+            if (txtEntryField.getText().toLowerCase().contains("i'm bob"))
+                txtChatArea.append("\n That's what she said");
+            txtEntryField.setText("");
+        }*/
+    }
+
     @Override
     public void run() {
         try (ServerSocket TCPServerSocket = new ServerSocket(PORT)) {

@@ -8,19 +8,20 @@ import pt.ipleiria.authority.controller.ContactController;
 
 import javax.swing.*;
 import java.awt.*;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MainView extends JFrame {
 
     private ToolBar toolBar;
-    private ConnectionsPanel connectionsPanel;
-    private ChatPanel chatPanel;
+    public ConnectionsPanel connectionsPanel;
+    public JSplitPane splitPane;
+    public JPanel chatPanel;
 
     public MainView(){
         initComponents();
+        ContactController.setView(this);
+        ConnectionsController.setView(this);
         setTitle("Authority");
         setSize(720,225);
         setVisible(true);
@@ -32,13 +33,13 @@ public class MainView extends JFrame {
         toolBar = new ToolBar();
 
         connectionsPanel = new ConnectionsPanel();
-        ContactController.setConnectionsPanel(connectionsPanel);
-        ConnectionsController.setConnectionsPanel(connectionsPanel);
 
-        chatPanel = new ChatPanel();
+        //Temporary ChannelChatView
+        chatPanel = new JPanel();
+        chatPanel.setPreferredSize(new Dimension(500, 400));
 
         //Adds panels into SplitPane
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, connectionsPanel, chatPanel);
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, connectionsPanel, chatPanel);
         splitPane.setOneTouchExpandable(true);
         splitPane.setDividerLocation(200);
 
@@ -49,6 +50,16 @@ public class MainView extends JFrame {
 
         add(panel);
     }
+
+
+    public JPanel getChatPanel() {
+        return chatPanel;
+    }
+
+    public void setChatPanel(JPanel chatPanel) {
+        this.chatPanel = chatPanel;
+    }
+
 
     public static void main(String[] args) {
         new MainView();

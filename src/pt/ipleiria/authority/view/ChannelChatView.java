@@ -1,5 +1,8 @@
 package pt.ipleiria.authority.view;
 
+import pt.ipleiria.authority.Sender;
+import pt.ipleiria.authority.controller.ConnectionsController;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -7,9 +10,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class ChatPanel extends JPanel {
+public class ChannelChatView extends JPanel {
     //ChatTextWidget
     private JLabel lblChannel;
+    public JLabel lblTitle;
     private JTextArea txtChatArea;
 
     //ChatEntryWidget
@@ -17,26 +21,32 @@ public class ChatPanel extends JPanel {
     private JTextField txtEntryField;
     private JButton btnSend;
 
-    public ChatPanel(){
+    public ChannelChatView(){
         setLayout(new BorderLayout());
         initComponents();
-        setMinimumSize(new Dimension(400, 50));
     }
 
     private void initComponents() {
         //Adds ChatArea
-        lblChannel = new JLabel("Channel->Man's not Hot:");
-        lblChannel.setPreferredSize(new Dimension(75, 25));
+        lblChannel = new JLabel("Channel -> ");
+        lblTitle = new JLabel("");
 
+        //Chat labels
+        JPanel pnlTitle = new JPanel();
+        pnlTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+        pnlTitle.setLayout(new BoxLayout(pnlTitle, BoxLayout.X_AXIS));
+        pnlTitle.add(lblChannel);
+        pnlTitle.add(lblTitle);
+
+        //Chat body
         txtChatArea = new JTextArea();
         txtChatArea.setEditable(false);
         txtChatArea.setLineWrap(true);
-
         JScrollPane pnlScroll = new JScrollPane(txtChatArea);
 
         JPanel pnlPanel = new JPanel();
         pnlPanel.setLayout(new BoxLayout(pnlPanel, BoxLayout.Y_AXIS));
-        pnlPanel.add(lblChannel);
+        pnlPanel.add(pnlTitle);
         pnlPanel.add(pnlScroll);
 
         add(pnlPanel, BorderLayout.CENTER);
@@ -49,8 +59,8 @@ public class ChatPanel extends JPanel {
         btnSend.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Sends a message to a network
-                sendMessage();
+                //Notify Controller a message to a network
+                ConnectionsController.sendMessage();
             }
         });
 
@@ -74,8 +84,7 @@ public class ChatPanel extends JPanel {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     //Sends a message to a network
-                    sendMessage();
-
+                    ConnectionsController.sendMessage();
                 }
             }
         });
@@ -88,17 +97,8 @@ public class ChatPanel extends JPanel {
         return jPanel;
     }
 
-
-    /**
-     * Sends message to a network
-     */
-    private void sendMessage() {
-        if (!txtEntryField.getText().isEmpty()) {
-            txtChatArea.append("\n Bob: " + txtEntryField.getText());
-            if (txtEntryField.getText().toLowerCase().contains("i'm bob"))
-                txtChatArea.append("\n That's what she said");
-            txtEntryField.setText("");
-        }
+    public JLabel getLblTitle() {
+        return lblTitle;
     }
 }
 

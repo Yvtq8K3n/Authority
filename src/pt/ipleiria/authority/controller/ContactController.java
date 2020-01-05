@@ -2,6 +2,7 @@ package pt.ipleiria.authority.controller;
 
 import pt.ipleiria.authority.model.Contact;
 import pt.ipleiria.authority.view.ConnectionsPanel;
+import pt.ipleiria.authority.view.MainView;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -13,6 +14,8 @@ public enum ContactController {
     CONTACT_CONTROLLER;
 
     private static final String PATH = "C:\\ola";//"/Users/joaoz/Downloads/";
+
+    private static MainView view;
 
     private static Contact myContact;
     private static ArrayList<Contact> contacts;
@@ -210,7 +213,7 @@ public enum ContactController {
         }
 
         //Adds newContact to hash map
-        ConnectionsPanel.CustomJTree trConnections = connectionsPanel.getTrConnections();
+        ConnectionsPanel.CustomJTree trConnections = view.connectionsPanel.getTrConnections();
 
         String ipAddress = newContact.getIpAddress();
         if(!activeIpAddress.contains(ipAddress)){
@@ -268,4 +271,9 @@ public enum ContactController {
         myContact.setName(name);
         updateContactsFile(PATH, myContact);
     }
+
+    public static void setView(MainView view) {
+        ContactController.view = view;
+    }
+
 }

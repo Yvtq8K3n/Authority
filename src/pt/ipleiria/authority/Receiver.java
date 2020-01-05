@@ -77,4 +77,16 @@ public class Receiver implements Runnable{
             e.printStackTrace();
         }
     }
+
+    /**
+     * This method receives a message in protocol TCP thought the network
+     */
+    public static void recieveMessage() {
+        /*if (!txtEntryField.getText().isEmpty()) {
+            txtChatArea.append("\n Bob: " + txtEntryField.getText());
+            if (txtEntryField.getText().toLowerCase().contains("i'm bob"))
+                txtChatArea.append("\n That's what she said");
+            txtEntryField.setText("");
+        }*/
+    }
 }
