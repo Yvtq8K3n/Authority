@@ -40,7 +40,10 @@ public enum ConnectionsController {
         chatPanels = new HashMap<>();
 
         for (Connection c: connections) {
-            keyExchange(c);
+            byte[] cypheredSecretKey = sendKey(c);
+
+            //receiver needs to receiveKey() and store it somewhere
+            byte[] uncypheredSecretKey = receiveKey(cypheredSecretKey);
         }
 
     }
@@ -89,42 +92,40 @@ public enum ConnectionsController {
     }
 
     public static byte[] encrypt(String data, SecretKey secretKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS1Padding");
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
         return cipher.doFinal(data.getBytes());
     }
 
     public static String decrypt(byte[] data, SecretKey secretKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS1Padding");
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, secretKey);
-        return Base64.getEncoder().encodeToString(cipher.doFinal(data));
+        return new String(cipher.doFinal(data));
     }
 
     public static void sendMessage(String message, Connection connection){
         try {
-            Contact c = ContactController.getMyContact();
-            //encrypt with contact pub key, then secret key
-            encrypt(encrypt(message, connection.getSecretKeyClass()), c.getPublicKeyClass());
+            //encrypt with secret key
+            encrypt(message, connection.getSecretKeyClass());
 
-        } catch (InvalidKeySpecException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
         }
     }
 
     public static String receiveMessage(byte[] response, Connection connection){
         try {
-            Contact c = ContactController.getMyContact();
-            //decrypt with secret then private
-            return decrypt(decrypt(response,c.getPrivateKeyClass()), connection.getSecretKeyClass());
+            //decrypt with secret
+            return decrypt(response, connection.getSecretKeyClass());
 
-        } catch (InvalidKeySpecException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    //exchange key method
-    public static void keyExchange(Connection connection){
+    //send key method
+    public static byte[] sendKey(Connection connection){
         try {
             Contact myContact = ContactController.getMyContact_pbk();
 
@@ -135,11 +136,26 @@ public enum ConnectionsController {
             }
 
             //change secret key
-            encrypt(connection.getSecretKey(), myContact.getPublicKeyClass());
+            return encrypt(connection.getSecretKey(), myContact.getPublicKeyClass());
 
         } catch (CloneNotSupportedException | InvalidKeySpecException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
         }
+        return null;
+    }
+
+    //receive key method
+    public static byte[] receiveKey(byte [] key){
+        try {
+            Contact myContact = ContactController.getMyContact();
+
+            //change secret key
+            return decrypt(key, myContact.getPrivateKeyClass());
+
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
