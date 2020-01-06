@@ -100,16 +100,26 @@ public class Contact implements Serializable, Cloneable {
         this.privateKey = privateKey;
     }
 
-    public PrivateKey getPrivateKeyClass() throws InvalidKeySpecException, NoSuchAlgorithmException {
-        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKey));
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        return keyFactory.generatePrivate(keySpec);
+    public PrivateKey getPrivateKeyClass() {
+        try{
+            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKey));
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            return keyFactory.generatePrivate(keySpec);
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public PublicKey getPublicKeyClass() throws InvalidKeySpecException, NoSuchAlgorithmException {
-        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(publicKey));
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        return keyFactory.generatePublic(keySpec);
+    public PublicKey getPublicKeyClass() {
+        try {
+            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(publicKey));
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            return keyFactory.generatePublic(keySpec);
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public byte[] getPublicKey() {

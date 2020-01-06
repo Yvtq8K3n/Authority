@@ -8,6 +8,7 @@ import pt.ipleiria.authority.model.Contact;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Base64;
 
 import static pt.ipleiria.authority.Sender.LOCALHOST;
 import static pt.ipleiria.authority.Sender.getOutboundAddress;
@@ -31,16 +32,30 @@ public class ChannelServer extends Thread {
 
                 Sender.logger.info("contact:" + contact);
                 Sender.logger.info("connection:" + connection);
+
                 if(connection == null){
                     connection = ConnectionsController.addConnection(contact);
 
-                    //Generate key and send key
-                    String key = (String) ois.readObject();
+                    //Receive key
+                    byte[] key = Base64.getDecoder().decode((byte[]) ois.readObject());
+
+                    connection.setSecretKey(ConnectionsController.decrypt(ConnectionsController.decrypt(
+                            key, contact.getPublicKeyClass()),ContactController.getMyContact().getPrivateKeyClass()));
                 }
 
                 //Uses key to decrypt message ....
-                String message = (String) ois.readObject();
+                byte[] byteMessage = Base64.getDecoder().decode((byte[]) ois.readObject());
+
+                String message = ConnectionsController.decrypt(byteMessage, connection.getSecretKeyClass());
                 System.out.println("message send:"+message);
+
+                ConnectionsController.sendMessage(message);
+
+                try {
+                    ConnectionsController.getChatPanel(connection).addMessage(ContactController.getMyContact_pbk().getName(), message);
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                }
 
                 //Show/Process new contact
                 Sender.logger.info("Message Received");
@@ -49,9 +64,7 @@ public class ChannelServer extends Thread {
                 is.close();
                 connectionSocket.close();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -64,16 +77,21 @@ public class ChannelServer extends Thread {
         ObjectOutputStream oos = new ObjectOutputStream(os);
 
         Connection conn = ConnectionsController.getConnection(destination);
-        
+
         if (!conn.hasSecretKey()){
-            //Generate key and send key
-            String key = "MY_ULTRA_SECRET";
-            oos.writeObject(key);
+            //generate key
+            conn.generateKey();
+            byte[] cypheredKey = ConnectionsController.encrypt(
+                    ConnectionsController.encrypt(conn.getSecretKey(), ContactController.getMyContact().getPrivateKeyClass()), destination.getPublicKeyClass());
+
+            oos.writeObject(Base64.getEncoder().encode(cypheredKey));
         }
 
         //Sends message
-        oos.writeObject(message);
-        Sender.logger.info("Message Sent:"+message);
+        byte[] cypheredMessage = ConnectionsController.encrypt(message, conn.getSecretKeyClass());
+
+        oos.writeObject(Base64.getEncoder().encode(cypheredMessage));
+        Sender.logger.info("Message Sent: "+message);
     }
 }
 
