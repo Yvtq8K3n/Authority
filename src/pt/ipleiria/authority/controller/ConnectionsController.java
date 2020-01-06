@@ -48,7 +48,7 @@ public enum ConnectionsController {
 
     }
 
-    public static void addConnection(Contact c){
+    public static Connection addConnection(Contact c){
         boolean contains = false;
         Connection connection = null;
 
@@ -71,12 +71,8 @@ public enum ConnectionsController {
             //Create respective view
             ChannelChatView chat = new ChannelChatView();
             chatPanels.put(connection, chat);
-        }else {
-            //Force selection, heavy operation
-            view.connectionsPanel.getTrConnections().setSelectedByValue(connection);
         }
-
-        updateChannelChatView(connection);
+        return connection;
     }
 
     public static byte[] encrypt(byte[] data, PublicKey key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
@@ -192,6 +188,19 @@ public enum ConnectionsController {
 
     public static Iterator<Connection> getConnections() {
         return connections.iterator();
+    }
+
+    public static Connection getConnection(Contact contact){
+        Connection connection = null;
+        for (Iterator<Connection> it = getConnections(); it.hasNext(); ) {
+            Connection c = it.next();
+            if (c.getContact().equals(contact)){
+                connection = c;
+                break;
+            }
+
+        }
+        return connection;
     }
 
     public static void notifyNameChange(String previousName, String newName) {

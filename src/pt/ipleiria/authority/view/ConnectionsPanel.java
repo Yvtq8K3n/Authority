@@ -189,7 +189,11 @@ public class ConnectionsPanel extends JPanel{
                         if (o instanceof Connection) {
                             ConnectionsController.updateChannelChatView((Connection) o);
                         } else if (o instanceof Contact) {
-                            ConnectionsController.addConnection((Contact) o);
+                            Connection connection = ConnectionsController.addConnection((Contact) o);
+                            ConnectionsController.updateChannelChatView(connection);
+
+                            //Force selection, heavy operation
+                            trConnections.setSelectedByValue(connection);
                         }
                     }
                 }

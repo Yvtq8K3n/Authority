@@ -14,7 +14,7 @@ import java.util.List;
 public enum ContactController {
     CONTACT_CONTROLLER;
 
-    private static final String PATH = "D:\\ola";//"/Users/joaoz/Downloads/";
+    private static final String PATH = "C:\\ola";//"/Users/joaoz/Downloads/";
 
     private static MainView view;
 
@@ -248,6 +248,19 @@ public enum ContactController {
                 return hashmap.get(a.next());
             }
         };
+    }
+
+    public static Contact getContact(String ipAddress){
+        Contact contact = null;
+        for (Iterator<Contact> it = getActiveContacts(); it.hasNext(); ) {
+            Contact c = it.next();
+            if (c.getIpAddress().equals(ipAddress)){
+                contact = c;
+                break;
+            }
+
+        }
+        return contact;
     }
 
     public static void setConnectionsPanel(ConnectionsPanel panel){
