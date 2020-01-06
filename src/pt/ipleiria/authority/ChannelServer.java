@@ -10,7 +10,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Base64;
 
-import static pt.ipleiria.authority.Sender.LOCALHOST;
 import static pt.ipleiria.authority.Sender.getOutboundAddress;
 
 public class ChannelServer extends Thread {
@@ -71,7 +70,7 @@ public class ChannelServer extends Thread {
 
     public static void sendMessage(Contact destination, String message) throws IOException {
         //destination.getIpAddress()
-        Socket TCPClient = new Socket(LOCALHOST, Sender.PORT+1);
+        Socket TCPClient = new Socket(destination.getIpAddress(), Sender.PORT+1);
 
         DataOutputStream os = new DataOutputStream(TCPClient.getOutputStream());
         ObjectOutputStream oos = new ObjectOutputStream(os);

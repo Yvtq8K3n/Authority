@@ -52,7 +52,7 @@ public class Sender implements Runnable{
             );
             UDPClientSocket.send(packet);
 
-            try {
+            /*try {
                Contact c  = (Contact) contact.clone();
                 c.updateId();
                 c.setName("Salamencer");
@@ -69,7 +69,7 @@ public class Sender implements Runnable{
 
             } catch (CloneNotSupportedException e) {
                 e.printStackTrace();
-            }
+            }*/
 
 
             Sender.logger.info("Introduction - Success");

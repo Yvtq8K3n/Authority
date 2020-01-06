@@ -67,13 +67,15 @@ public class Receiver implements Runnable{
             DataOutputStream os = new DataOutputStream(TCPClient.getOutputStream());
             ObjectOutputStream oos = new ObjectOutputStream(os);
 
+            Contact myContact = ContactController.getMyContact_pbk();
+
             //Wries data
-            oos.writeObject(senderContact);
+            oos.writeObject(myContact);
 
             //Close connection
             oos.close();
             os.close();
-        } catch (IOException e) {
+        } catch (IOException | CloneNotSupportedException e) {
             e.printStackTrace();
         }
     }
