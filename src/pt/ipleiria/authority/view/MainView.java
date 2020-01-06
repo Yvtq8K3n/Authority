@@ -1,6 +1,7 @@
 package pt.ipleiria.authority.view;
 
 
+import pt.ipleiria.authority.ChannelServer;
 import pt.ipleiria.authority.Sender;
 import pt.ipleiria.authority.Receiver;
 import pt.ipleiria.authority.controller.ConnectionsController;
@@ -66,9 +67,11 @@ public class MainView extends JFrame {
 
         Sender sender = new Sender();
         Receiver receiver = new Receiver();
-        ExecutorService executorService = Executors.newFixedThreadPool(5);
+        ChannelServer channelServer = new ChannelServer();
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
         executorService.submit(sender);
         executorService.submit(receiver);
+        executorService.submit(channelServer);
 
         Sender.broadcast();
     }

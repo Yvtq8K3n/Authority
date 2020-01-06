@@ -1,5 +1,6 @@
 package pt.ipleiria.authority.controller;
 
+import pt.ipleiria.authority.ChannelServer;
 import pt.ipleiria.authority.Sender;
 import pt.ipleiria.authority.model.Connection;
 import pt.ipleiria.authority.model.Contact;
@@ -8,6 +9,7 @@ import pt.ipleiria.authority.view.ConnectionsPanel;
 import pt.ipleiria.authority.view.MainView;
 
 import javax.crypto.*;
+import java.io.IOException;
 import java.security.spec.InvalidKeySpecException;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -19,6 +21,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.*;
 import java.util.List;
+
 
 public enum ConnectionsController {
     CONNECTIONS_CONTROLLER;
@@ -140,9 +143,20 @@ public enum ConnectionsController {
     }
 
 
-    public static void sendMessage(){
-        if(activeConnection!=null){
-            Sender.sendMessage();
+    public static void sendMessage(String message){
+        try {
+            if(activeConnection!=null){
+                Contact dest = activeConnection.getContact();
+                ChannelServer.sendMessage(dest, message);
+
+                //Updates
+                ChannelChatView chatPanel= chatPanels.get(activeConnection);
+                chatPanel.addMessage(ContactController.getMyContact_pbk().getName(), message);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -162,5 +176,12 @@ public enum ConnectionsController {
 
     public static Iterator<Connection> getConnections() {
         return connections.iterator();
+    }
+
+    public static void notifyNameChange(String previousName, String newName) {
+        for (Connection con:connections) {
+            ChannelChatView channel = chatPanels.get(con);
+            channel.addMessage("Formerly known has \""+previousName+"\" changed its name to", "\""+newName+"\"");
+        }
     }
 }

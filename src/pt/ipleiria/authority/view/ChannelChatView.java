@@ -60,7 +60,8 @@ public class ChannelChatView extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //Notify Controller a message to a network
-                ConnectionsController.sendMessage();
+                ConnectionsController.sendMessage(txtEntryField.getText());
+                txtEntryField.setText("");
             }
         });
 
@@ -84,7 +85,8 @@ public class ChannelChatView extends JPanel {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     //Sends a message to a network
-                    ConnectionsController.sendMessage();
+                    ConnectionsController.sendMessage(txtEntryField.getText());
+                    txtEntryField.setText("");
                 }
             }
         });
@@ -99,6 +101,13 @@ public class ChannelChatView extends JPanel {
 
     public JLabel getLblTitle() {
         return lblTitle;
+    }
+
+    public void addMessage(String from, String message){
+        if (from.isEmpty()) throw new IllegalArgumentException("No From entity");
+        if (!message.isEmpty()) {
+            txtChatArea.append("\n" + from + " : " + message);
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 package pt.ipleiria.authority.controller;
 
 import pt.ipleiria.authority.model.Contact;
+import pt.ipleiria.authority.view.ChannelChatView;
 import pt.ipleiria.authority.view.ConnectionsPanel;
 import pt.ipleiria.authority.view.MainView;
 
@@ -268,8 +269,10 @@ public enum ContactController {
     }
 
     public static void updateMyContactName(String name) throws IOException {
+        String previous = myContact.getName();
         myContact.setName(name);
         updateContactsFile(PATH, myContact);
+        ConnectionsController.notifyNameChange(previous, name);
     }
 
     public static void setView(MainView view) {
