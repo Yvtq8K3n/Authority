@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 public class Sender implements Runnable{
 
-    static Logger logger;
+    public static Logger logger;
     protected static final int PORT = 443;//UDP PORT
     protected static final String BROADCAST_ADDRESS =  "192.168.1.255";
     protected static final String LOCALHOST = "127.0.0.1";

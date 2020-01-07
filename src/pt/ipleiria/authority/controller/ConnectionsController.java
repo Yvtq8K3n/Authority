@@ -109,7 +109,7 @@ public enum ConnectionsController {
             cipher.init(Cipher.DECRYPT_MODE, key);
             return cipher.doFinal(data);
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e){
-            e.getStackTrace();
+            Sender.logger.info(e.getMessage());
         }
         return null;
     }

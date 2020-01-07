@@ -3,10 +3,8 @@ package pt.ipleiria.authority.model;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 public class Connection {
@@ -30,8 +28,7 @@ public class Connection {
 
             keyGenerator.init(256, secureRandom);
             SecretKey secretKey = keyGenerator.generateKey();
-
-            this.secretKey = Base64.getEncoder().encode(secretKey.getEncoded());
+            this.secretKey = secretKey.getEncoded();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
@@ -50,8 +47,7 @@ public class Connection {
     }
 
     public SecretKey getSecretKeyClass() {
-        SecretKeySpec keySpec = new SecretKeySpec(Base64.getDecoder().decode(secretKey), "AES");
-        return keySpec;
+        return new SecretKeySpec(secretKey, "AES");
     }
 
     public Contact getContact() {
