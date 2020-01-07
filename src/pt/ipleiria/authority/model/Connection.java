@@ -12,7 +12,7 @@ public class Connection {
 
     public Connection(Contact c){
         this.contact =  c;
-        generateKey();
+        //generateKey();
 
     }
 

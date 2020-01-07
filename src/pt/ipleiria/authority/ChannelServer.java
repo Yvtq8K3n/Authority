@@ -40,8 +40,12 @@ public class ChannelServer extends Thread {
                     //Receive key
                     byte[] key = Base64.getDecoder().decode((byte[]) ois.readObject());
 
-                    connection.setSecretKey(ConnectionsController.decrypt(ConnectionsController.decrypt(
-                            key, contact.getPublicKeyClass()),ContactController.getMyContact().getPrivateKeyClass()));
+                    System.out.println("Key: " + new String(key));
+
+                    connection.setSecretKey(ConnectionsController.decrypt(ConnectionsController.decrypt(key, contact.getPublicKeyClass()),ContactController.getMyContact().getPrivateKeyClass()));
+
+                    System.out.println(new String(connection.getSecretKey()));
+                    System.out.println("ola");
                 }
 
                 //Uses key to decrypt message ....
@@ -88,6 +92,7 @@ public class ChannelServer extends Thread {
                     ConnectionsController.encrypt(conn.getSecretKey(), ContactController.getMyContact().getPrivateKeyClass()), destination.getPublicKeyClass());
 
             oos.writeObject(Base64.getEncoder().encode(cypheredKey));
+            System.out.println(new String(cypheredKey));
         }
 
         //Sends message
