@@ -47,7 +47,7 @@ public class ChannelServer extends Thread {
                     //Receive key
                     byte[] decodedkey = Base64.getDecoder().decode((byte[]) ois.readObject());
                     byte[] decryptDestPriv = ConnectionsController.decrypt(decodedkey, ContactController.getMyContact().getPrivateKeyClass());
-                    byte[] decryptSrcPub = ConnectionsController.decrypt(Base64.getDecoder().decode(decryptDestPriv), contact.getPublicKeyClass());
+                    byte[] decryptSrcPub = ConnectionsController.decrypt(decryptDestPriv, contact.getPublicKeyClass());
 
                     connection.setSecretKey(decryptSrcPub);
 
