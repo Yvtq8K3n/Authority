@@ -68,10 +68,10 @@ public class MainView extends JFrame {
         Sender sender = new Sender();
         Receiver receiver = new Receiver();
         ChannelServer channelServer = new ChannelServer();
-        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
         executorService.submit(sender);
         executorService.submit(receiver);
-        //executorService.submit(channelServer);
+        executorService.submit(channelServer);
 
         Sender.broadcast();
     }
