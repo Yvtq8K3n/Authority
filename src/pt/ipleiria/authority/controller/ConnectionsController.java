@@ -10,15 +10,12 @@ import pt.ipleiria.authority.view.MainView;
 
 import javax.crypto.*;
 import java.io.IOException;
+import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.*;
 import java.util.List;
 

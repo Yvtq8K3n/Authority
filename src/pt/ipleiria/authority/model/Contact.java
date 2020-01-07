@@ -36,7 +36,7 @@ public class Contact implements Serializable, Cloneable {
 
             //Generate Asymmetric Keys
             KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
-            keyGen.initialize(1024);
+            keyGen.initialize(2048);
             KeyPair pair = keyGen.generateKeyPair();
 
             this.privateKey = Base64.getEncoder().withoutPadding().encode(pair.getPrivate().getEncoded());
