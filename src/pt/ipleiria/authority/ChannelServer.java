@@ -46,10 +46,10 @@ public class ChannelServer extends Thread {
                      */
                     //Receive key
                     byte[] decodedkey = Base64.getDecoder().decode((byte[]) ois.readObject());
-                    byte[] decryptDestPriv = ConnectionsController.decrypt(decodedkey, ContactController.getMyContact().getPrivateKeyClass());
-                    //byte[] decryptSrcPub = ConnectionsController.decrypt(decryptDestPriv, contact.getPublicKeyClass());
+                    //byte[] decryptDestPriv = ConnectionsController.decrypt(decodedkey, ContactController.getMyContact().getPrivateKeyClass());
+                    byte[] decryptSrcPub = ConnectionsController.decrypt(decodedkey, contact.getPublicKeyClass());
 
-                    System.out.println(decryptDestPriv);
+                    Sender.logger.info("Key: " + new String(decryptSrcPub));
                     //connection.setSecretKey(decryptSrcPub);
 
                     //Sender.logger.info("Key: " + new String(decryptSrcPub));
@@ -99,8 +99,9 @@ public class ChannelServer extends Thread {
             //generate key
             conn.generateKey();
 
-            byte[] encryptSrcSecret = ConnectionsController.encrypt(conn.getSecretKey(), ContactController.getMyContact().getPrivateKeyClass());
+            System.out.println("message send:"+conn.getSecretKey());
 
+            byte[] encryptSrcSecret = ConnectionsController.encrypt(conn.getSecretKey(), ContactController.getMyContact().getPrivateKeyClass());
             //byte[] encryptDestPub = ConnectionsController.encrypt(encryptSrcSecret, destination.getPublicKeyClass());
             byte[] encodedKey = Base64.getEncoder().withoutPadding().encode(encryptSrcSecret);
 
