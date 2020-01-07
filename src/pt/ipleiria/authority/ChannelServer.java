@@ -88,11 +88,19 @@ public class ChannelServer extends Thread {
         if (!conn.hasSecretKey()){
             //generate key
             conn.generateKey();
-            byte[] cypheredKey = ConnectionsController.encrypt(
-                    ConnectionsController.encrypt(conn.getSecretKey(), ContactController.getMyContact().getPrivateKeyClass()), destination.getPublicKeyClass());
 
-            oos.writeObject(Base64.getEncoder().encode(cypheredKey));
-            System.out.println(new String(cypheredKey));
+            //byte[] cypheredKey = ConnectionsController.encrypt(ConnectionsController.encrypt(conn.getSecretKey(), ContactController.getMyContact().getPrivateKeyClass()), destination.getPublicKeyClass());
+
+            //System.out.println(new String(cypheredKey));
+
+            byte[] stCifra = ConnectionsController.encrypt(conn.getSecretKey(), ContactController.getMyContact().getPrivateKeyClass());
+            byte[] ndCifra = ConnectionsController.encrypt(stCifra, destination.getPublicKeyClass());
+
+            System.out.println("1st: " + new String(stCifra));
+            System.out.println(("2nd: " + new String(ndCifra)));
+
+
+                    //oos.writeObject(Base64.getEncoder().encode(cypheredKey));
         }
 
         //Sends message

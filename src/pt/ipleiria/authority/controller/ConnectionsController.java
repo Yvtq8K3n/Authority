@@ -64,6 +64,7 @@ public enum ConnectionsController {
             //Create respective view
             ChannelChatView chat = new ChannelChatView();
             chatPanels.put(connection, chat);
+            activeConnection = connection;
         }
         return connection;
     }
@@ -75,6 +76,7 @@ public enum ConnectionsController {
             return cipher.doFinal(data);
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e){
             e.getStackTrace();
+            System.out.println("ERRO: " + e.getMessage());
         }
         return null;
     }
