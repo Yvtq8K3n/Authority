@@ -9,6 +9,8 @@ import java.nio.channels.SocketChannel;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.RSAPublicKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -100,16 +102,26 @@ public class Contact implements Serializable, Cloneable {
         this.privateKey = privateKey;
     }
 
-    public PrivateKey getPrivateKeyClass() throws InvalidKeySpecException, NoSuchAlgorithmException {
-        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKey));
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        return keyFactory.generatePrivate(keySpec);
+    public PrivateKey getPrivateKeyClass() {
+        try{
+            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKey));
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            return keyFactory.generatePrivate(keySpec);
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public PublicKey getPublicKeyClass() throws InvalidKeySpecException, NoSuchAlgorithmException {
-        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(publicKey));
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        return keyFactory.generatePublic(keySpec);
+    public PublicKey getPublicKeyClass() {
+        try {
+            X509EncodedKeySpec keySpec = new X509EncodedKeySpec(Base64.getDecoder().decode(publicKey));
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            return keyFactory.generatePublic(keySpec);
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public byte[] getPublicKey() {
@@ -188,7 +200,7 @@ public class Contact implements Serializable, Cloneable {
      * @return true
      */
     public boolean compareTo(Contact c) {
-        return MAC == c.getMAC() && publicKey == c.getPublicKey();
+        return MAC.equals(c.getMAC()) && new String(publicKey).equals(new String(c.getPublicKey()));
     }
 
     @Override

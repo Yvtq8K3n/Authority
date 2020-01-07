@@ -8,8 +8,8 @@ import pt.ipleiria.authority.model.Contact;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Base64;
 
-import static pt.ipleiria.authority.Sender.LOCALHOST;
 import static pt.ipleiria.authority.Sender.getOutboundAddress;
 
 public class ChannelServer extends Thread {
@@ -25,22 +25,44 @@ public class ChannelServer extends Thread {
                 ObjectInputStream ois = new ObjectInputStream(is);
 
                 //Retrieve srcAddress
-                String srcAddress = getOutboundAddress(connectionSocket.getRemoteSocketAddress()).getHostAddress();
+                //String srcAddress = getOutboundAddress(connectionSocket.getRemoteSocketAddress()).getHostAddress();
+                String srcAddress = connectionSocket.getInetAddress().getHostAddress();
+
                 Contact contact = ContactController.getContact(srcAddress);
                 Connection connection = ConnectionsController.getConnection(contact);
 
                 Sender.logger.info("contact:" + contact);
                 Sender.logger.info("connection:" + connection);
+
                 if(connection == null){
                     connection = ConnectionsController.addConnection(contact);
 
-                    //Generate key and send key
-                    String key = (String) ois.readObject();
+                    //Receive key
+                    byte[] key = Base64.getDecoder().decode((byte[]) ois.readObject());
+
+                    System.out.println("Key: " + new String(key));
+
+                    connection.setSecretKey(ConnectionsController.decrypt(ConnectionsController.decrypt(key, contact.getPublicKeyClass()),ContactController.getMyContact().getPrivateKeyClass()));
+
+                    System.out.println(new String(connection.getSecretKey()));
+                    System.out.println("ola");
                 }
 
                 //Uses key to decrypt message ....
-                String message = (String) ois.readObject();
+                byte[] byteMessage = Base64.getDecoder().decode((byte[]) ois.readObject());
+
+                System.out.println(connection.getSecretKeyClass()!=null);
+
+                String message = ConnectionsController.decrypt(byteMessage, connection.getSecretKeyClass());
                 System.out.println("message send:"+message);
+
+                ConnectionsController.sendMessage(message);
+
+                try {
+                    ConnectionsController.getChatPanel(connection).addMessage(ContactController.getMyContact_pbk().getName(), message);
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                }
 
                 //Show/Process new contact
                 Sender.logger.info("Message Received");
@@ -49,16 +71,14 @@ public class ChannelServer extends Thread {
                 is.close();
                 connectionSocket.close();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
     public static void sendMessage(Contact destination, String message) throws IOException {
         //destination.getIpAddress()
-        Socket TCPClient = new Socket(LOCALHOST, Sender.PORT+1);
+        Socket TCPClient = new Socket(destination.getIpAddress(), Sender.PORT+1);
 
         DataOutputStream os = new DataOutputStream(TCPClient.getOutputStream());
         ObjectOutputStream oos = new ObjectOutputStream(os);
@@ -66,14 +86,28 @@ public class ChannelServer extends Thread {
         Connection conn = ConnectionsController.getConnection(destination);
 
         if (!conn.hasSecretKey()){
-            //Generate key and send key
-            String key = "MY_ULTRA_SECRET";
-            oos.writeObject(key);
+            //generate key
+            conn.generateKey();
+
+            //byte[] cypheredKey = ConnectionsController.encrypt(ConnectionsController.encrypt(conn.getSecretKey(), ContactController.getMyContact().getPrivateKeyClass()), destination.getPublicKeyClass());
+
+            //System.out.println(new String(cypheredKey));
+
+            byte[] stCifra = ConnectionsController.encrypt(conn.getSecretKey(), ContactController.getMyContact().getPrivateKeyClass());
+            byte[] ndCifra = ConnectionsController.encrypt(stCifra, destination.getPublicKeyClass());
+
+            System.out.println("1st: " + new String(stCifra));
+            System.out.println(("2nd: " + new String(ndCifra)));
+
+
+                    //oos.writeObject(Base64.getEncoder().encode(cypheredKey));
         }
 
         //Sends message
-        oos.writeObject(message);
-        Sender.logger.info("Message Sent:"+message);
+        byte[] cypheredMessage = ConnectionsController.encrypt(message, conn.getSecretKeyClass());
+
+        oos.writeObject(Base64.getEncoder().encode(cypheredMessage));
+        Sender.logger.info("Message Sent: "+message);
     }
 }
 

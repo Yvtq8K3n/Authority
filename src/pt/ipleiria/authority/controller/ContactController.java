@@ -14,7 +14,7 @@ import java.util.List;
 public enum ContactController {
     CONTACT_CONTROLLER;
 
-    private static final String PATH = "C:\\ola";//"/Users/joaoz/Downloads/";
+    private static final String PATH = "D:\\ola";//"/Users/joaoz/Downloads/";
 
     private static MainView view;
 
@@ -206,6 +206,8 @@ public enum ContactController {
                 contains = true;
             }
         }
+
+        System.out.println("Contains: " + contains);
 
         if (!contains) {
             newContact.updateId();

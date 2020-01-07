@@ -52,7 +52,7 @@ public class Sender implements Runnable{
             );
             UDPClientSocket.send(packet);
 
-            try {
+            /*try {
                Contact c  = (Contact) contact.clone();
                 c.updateId();
                 c.setName("Salamencer");
@@ -69,7 +69,7 @@ public class Sender implements Runnable{
 
             } catch (CloneNotSupportedException e) {
                 e.printStackTrace();
-            }
+            }*/
 
 
             Sender.logger.info("Introduction - Success");
@@ -102,7 +102,7 @@ public class Sender implements Runnable{
                 ObjectInputStream ois = new ObjectInputStream(is);
 
                 //Retrieve srcAddress
-                String srcAddress = getOutboundAddress(connectionSocket.getRemoteSocketAddress()).getHostAddress();
+                String srcAddress = connectionSocket.getInetAddress().getHostAddress();
 
                 //Retrieves data
                 Contact contact = (Contact) ois.readObject();
@@ -111,6 +111,8 @@ public class Sender implements Runnable{
 
                 //Show/Process new contact
                 Sender.logger.info("Integration - Success");
+
+                Sender.logger.info(contact.toString());
                 /*Sender.logger.info("name:"+contact1.getName());
                 Sender.logger.info("IP:"+contact1.getIpAddress());
                 Sender.logger.info("Mac:"+contact1.getMAC());

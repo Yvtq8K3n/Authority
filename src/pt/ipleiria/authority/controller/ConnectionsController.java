@@ -39,13 +39,6 @@ public enum ConnectionsController {
         connections = new ArrayList<>();
         chatPanels = new HashMap<>();
 
-        for (Connection c: connections) {
-            byte[] cypheredSecretKey = sendKey(c);
-
-            //receiver needs to receiveKey() and store it somewhere
-            byte[] uncypheredSecretKey = receiveKey(cypheredSecretKey);
-        }
-
     }
 
     public static Connection addConnection(Contact c){
@@ -71,89 +64,77 @@ public enum ConnectionsController {
             //Create respective view
             ChannelChatView chat = new ChannelChatView();
             chatPanels.put(connection, chat);
+            activeConnection = connection;
         }
         return connection;
     }
 
-    public static byte[] encrypt(byte[] data, PublicKey key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-        cipher.init(Cipher.ENCRYPT_MODE, key);
-        return cipher.doFinal(data);
-    }
-
-    public static byte[] decrypt(byte[] data, PrivateKey key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-        cipher.init(Cipher.DECRYPT_MODE, key);
-        return cipher.doFinal(data);
-    }
-
-    public static byte[] encrypt(String data, SecretKey secretKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-        return cipher.doFinal(data.getBytes());
-    }
-
-    public static String decrypt(byte[] data, SecretKey secretKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-        cipher.init(Cipher.DECRYPT_MODE, secretKey);
-        return new String(cipher.doFinal(data));
-    }
-
-    public static void sendMessage(String message, Connection connection){
+    public static byte[] encrypt(byte[] data, PublicKey key) {
         try {
-            //encrypt with secret key
-            encrypt(message, connection.getSecretKeyClass());
-
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static String receiveMessage(byte[] response, Connection connection){
-        try {
-            //decrypt with secret
-            return decrypt(response, connection.getSecretKeyClass());
-
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
-            e.printStackTrace();
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+            return cipher.doFinal(data);
+        } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e){
+            e.getStackTrace();
+            System.out.println("ERRO: " + e.getMessage());
         }
         return null;
     }
 
-    //send key method
-    public static byte[] sendKey(Connection connection){
+    public static byte[] encrypt(byte[] data, PrivateKey key) {
         try {
-            Contact myContact = ContactController.getMyContact_pbk();
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+            return cipher.doFinal(data);
+        } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e){
+            e.getStackTrace();
+        }
+            return null;
+        }
 
-            //need to check connection
-            if (!connection.hasSecretKey()){
-                //generate key
-                connection.generateKey();
+    public static byte[] decrypt(byte[] data, PrivateKey key) {
+        try {
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            cipher.init(Cipher.DECRYPT_MODE, key);
+            return cipher.doFinal(data);
+        } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e){
+            e.getStackTrace();
             }
-
-            //change secret key
-            return encrypt(connection.getSecretKey(), myContact.getPublicKeyClass());
-
-        } catch (CloneNotSupportedException | InvalidKeySpecException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
-            e.printStackTrace();
-        }
         return null;
     }
 
-    //receive key method
-    public static byte[] receiveKey(byte [] key){
+    public static byte[] decrypt(byte[] data, PublicKey key) {
         try {
-            Contact myContact = ContactController.getMyContact();
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            cipher.init(Cipher.DECRYPT_MODE, key);
+            return cipher.doFinal(data);
+        } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e){
+            e.getStackTrace();
+        }
+        return null;
+    }
 
-            //change secret key
-            return decrypt(key, myContact.getPrivateKeyClass());
-
-        } catch (InvalidKeySpecException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
+    public static byte[] encrypt(String data, SecretKey secretKey) {
+        try {
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            return cipher.doFinal(data.getBytes());
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace();
         }
         return null;
     }
 
+    public static String decrypt(byte[] data, SecretKey secretKey) {
+        try {
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+            return new String(cipher.doFinal(data));
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public static void sendMessage(String message){
         try {
@@ -165,9 +146,7 @@ public enum ConnectionsController {
                 ChannelChatView chatPanel= chatPanels.get(activeConnection);
                 chatPanel.addMessage(ContactController.getMyContact_pbk().getName(), message);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (CloneNotSupportedException e) {
+        } catch (IOException | CloneNotSupportedException e) {
             e.printStackTrace();
         }
     }
@@ -208,5 +187,9 @@ public enum ConnectionsController {
             ChannelChatView channel = chatPanels.get(con);
             channel.addMessage("Formerly known has \""+previousName+"\" changed its name to", "\""+newName+"\"");
         }
+    }
+
+    public static ChannelChatView getChatPanel(Connection connection) {
+        return chatPanels.get(connection);
     }
 }

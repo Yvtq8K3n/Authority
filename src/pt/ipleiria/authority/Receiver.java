@@ -38,6 +38,9 @@ public class Receiver implements Runnable{
                     //Show/Process new contact
                     Sender.logger.info("Interpretation - Success");
 
+
+
+
                     /*Sender.logger.info("name:"+contact.getName());
                     Sender.logger.info("IP:"+contact.getIpAddress());
                     Sender.logger.info("Mac:"+contact.getMAC());
@@ -67,13 +70,15 @@ public class Receiver implements Runnable{
             DataOutputStream os = new DataOutputStream(TCPClient.getOutputStream());
             ObjectOutputStream oos = new ObjectOutputStream(os);
 
+            Contact myContact = ContactController.getMyContact_pbk();
+
             //Wries data
-            oos.writeObject(senderContact);
+            oos.writeObject(myContact);
 
             //Close connection
             oos.close();
             os.close();
-        } catch (IOException e) {
+        } catch (IOException | CloneNotSupportedException e) {
             e.printStackTrace();
         }
     }
