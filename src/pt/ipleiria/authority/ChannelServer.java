@@ -100,7 +100,7 @@ public class ChannelServer extends Thread {
 
             byte[] encryptSrcSecret = ConnectionsController.encrypt(conn.getSecretKey(), ContactController.getMyContact().getPrivateKeyClass());
             byte[] encryptDestPub = ConnectionsController.encrypt(encryptSrcSecret, destination.getPublicKeyClass());
-            byte[] encodedKey = Base64.getEncoder().encode(encryptDestPub);
+            byte[] encodedKey = Base64.getEncoder().withoutPadding().encode(encryptDestPub);
 
             oos.writeObject(encodedKey);
         }
@@ -108,7 +108,7 @@ public class ChannelServer extends Thread {
         //Sends message
         byte[] cypheredMessage = ConnectionsController.encrypt(message, conn.getSecretKeyClass());
 
-        oos.writeObject(Base64.getEncoder().encode(cypheredMessage));
+        oos.writeObject(Base64.getEncoder().withoutPadding().encode(cypheredMessage));
         Sender.logger.info("Message Sent: "+message);
     }
 }

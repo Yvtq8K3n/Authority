@@ -39,8 +39,8 @@ public class Contact implements Serializable, Cloneable {
             keyGen.initialize(1024);
             KeyPair pair = keyGen.generateKeyPair();
 
-            this.privateKey = Base64.getEncoder().encode(pair.getPrivate().getEncoded());
-            this.publicKey = Base64.getEncoder().encode(pair.getPublic().getEncoded());
+            this.privateKey = Base64.getEncoder().withoutPadding().encode(pair.getPrivate().getEncoded());
+            this.publicKey = Base64.getEncoder().withoutPadding().encode(pair.getPublic().getEncoded());
 
         } catch (NoSuchAlgorithmException | UnknownHostException | SocketException e) {
             e.printStackTrace();
