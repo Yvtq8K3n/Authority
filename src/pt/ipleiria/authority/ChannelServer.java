@@ -25,7 +25,9 @@ public class ChannelServer extends Thread {
                 ObjectInputStream ois = new ObjectInputStream(is);
 
                 //Retrieve srcAddress
-                String srcAddress = getOutboundAddress(connectionSocket.getRemoteSocketAddress()).getHostAddress();
+                //String srcAddress = getOutboundAddress(connectionSocket.getRemoteSocketAddress()).getHostAddress();
+                String srcAddress = connectionSocket.getInetAddress().getHostAddress();
+
                 Contact contact = ContactController.getContact(srcAddress);
                 Connection connection = ConnectionsController.getConnection(contact);
 
@@ -44,6 +46,8 @@ public class ChannelServer extends Thread {
 
                 //Uses key to decrypt message ....
                 byte[] byteMessage = Base64.getDecoder().decode((byte[]) ois.readObject());
+
+                System.out.println(connection.getSecretKeyClass()!=null);
 
                 String message = ConnectionsController.decrypt(byteMessage, connection.getSecretKeyClass());
                 System.out.println("message send:"+message);
