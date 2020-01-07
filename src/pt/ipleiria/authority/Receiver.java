@@ -66,6 +66,9 @@ public class Receiver implements Runnable{
      * via TCP
      */
     private void receiverCallback(Contact senderContact){
+
+        Sender.logger.info("ip: "+senderContact.getIpAddress());
+        Sender.logger.info("port: "+Sender.PORT);
         try(Socket TCPClient = new Socket(senderContact.getIpAddress(), Sender.PORT)) {
             DataOutputStream os = new DataOutputStream(TCPClient.getOutputStream());
             ObjectOutputStream oos = new ObjectOutputStream(os);

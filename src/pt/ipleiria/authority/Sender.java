@@ -52,26 +52,6 @@ public class Sender implements Runnable{
             );
             UDPClientSocket.send(packet);
 
-            /*try {
-               Contact c  = (Contact) contact.clone();
-                c.updateId();
-                c.setName("Salamencer");
-                c.setIpAddress("asdoasdpsadasdsad"+c.getId());
-                c.setMAC("aiosjdasoijdpasdasdkp"+c.getId());
-                ContactController.addContact(c);
-
-                Contact c1  = (Contact) contact.clone();
-                c1.updateId();
-                c1.setName("Bobby");
-                c1.setIpAddress("asdoasdpsadasdsad"+c1.getId());
-                c1.setMAC("aiosjdasoijdpasdasdkp"+c1.getId());
-                ContactController.addContact(c1);
-
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-            }*/
-
-
             Sender.logger.info("Introduction - Success");
         } catch (SocketException e) {
             e.printStackTrace();
@@ -98,6 +78,7 @@ public class Sender implements Runnable{
         try (ServerSocket TCPServerSocket = new ServerSocket(PORT)) {
             while (true) {
                 Socket connectionSocket = TCPServerSocket.accept();
+
                 DataInputStream is = new DataInputStream(connectionSocket.getInputStream());
                 ObjectInputStream ois = new ObjectInputStream(is);
 
@@ -124,9 +105,9 @@ public class Sender implements Runnable{
                 connectionSocket.close();
             }
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            Sender.logger.info("INFO; "+e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            Sender.logger.info("INFO; "+e.getMessage());
         }
     }
 
