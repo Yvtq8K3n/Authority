@@ -102,7 +102,7 @@ public class Sender implements Runnable{
 
                 ois.close();
                 is.close();
-                connectionSocket.close();
+                //connectionSocket.close();
             }
         } catch (ClassNotFoundException e) {
             Sender.logger.info("INFO; "+e.getMessage());

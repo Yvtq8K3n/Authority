@@ -38,9 +38,6 @@ public class Receiver implements Runnable{
                     //Show/Process new contact
                     Sender.logger.info("Interpretation - Success");
 
-
-
-
                     /*Sender.logger.info("name:"+contact.getName());
                     Sender.logger.info("IP:"+contact.getIpAddress());
                     Sender.logger.info("Mac:"+contact.getMAC());
@@ -77,6 +74,7 @@ public class Receiver implements Runnable{
 
             //Wries data
             oos.writeObject(myContact);
+            Sender.logger.info("Trying to send");
 
             //Close connection
             oos.close();

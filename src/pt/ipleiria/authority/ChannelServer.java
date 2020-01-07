@@ -37,13 +37,21 @@ public class ChannelServer extends Thread {
                 if(connection == null){
                     connection = ConnectionsController.addConnection(contact);
 
+
+                    /*
+                    byte[] encryptSrcSecret = ConnectionsController.encrypt(message, conn.getSecretKeyClass());
+                    byte[] encryptDestPub = ConnectionsController.encrypt(encryptSrcSecret, destination.getPublicKeyClass());
+                    byte[] encodedKey = Base64.getEncoder().encode(encryptDestPub);
+
+                     */
                     //Receive key
-                    byte[] key = Base64.getDecoder().decode((byte[]) ois.readObject());
+                    byte[] decodedkey = Base64.getDecoder().decode((byte[]) ois.readObject());
+                    byte[] decryptDestPriv = ConnectionsController.decrypt(decodedkey, ContactController.getMyContact().getPrivateKeyClass());
+                    byte[] decryptSrcPub = ConnectionsController.decrypt(decryptDestPriv, contact.getPublicKeyClass());
 
-                    System.out.println("Key: " + new String(key));
+                    connection.setSecretKey(decryptSrcPub);
 
-                    connection.setSecretKey(ConnectionsController.decrypt(ConnectionsController.decrypt(key, contact.getPublicKeyClass()),ContactController.getMyContact().getPrivateKeyClass()));
-
+                    System.out.println("Key: " + new String(decryptSrcPub));
                     System.out.println(new String(connection.getSecretKey()));
                     System.out.println("ola");
                 }
@@ -89,18 +97,11 @@ public class ChannelServer extends Thread {
             //generate key
             conn.generateKey();
 
-            //byte[] cypheredKey = ConnectionsController.encrypt(ConnectionsController.encrypt(conn.getSecretKey(), ContactController.getMyContact().getPrivateKeyClass()), destination.getPublicKeyClass());
+            byte[] encryptSrcSecret = ConnectionsController.encrypt(message, conn.getSecretKeyClass());
+            byte[] encryptDestPub = ConnectionsController.encrypt(encryptSrcSecret, destination.getPublicKeyClass());
+            byte[] encodedKey = Base64.getEncoder().encode(encryptDestPub);
 
-            //System.out.println(new String(cypheredKey));
-
-            byte[] stCifra = ConnectionsController.encrypt(conn.getSecretKey(), ContactController.getMyContact().getPrivateKeyClass());
-            byte[] ndCifra = ConnectionsController.encrypt(stCifra, destination.getPublicKeyClass());
-
-            System.out.println("1st: " + new String(stCifra));
-            System.out.println(("2nd: " + new String(ndCifra)));
-
-
-                    //oos.writeObject(Base64.getEncoder().encode(cypheredKey));
+            oos.writeObject(encodedKey);
         }
 
         //Sends message
