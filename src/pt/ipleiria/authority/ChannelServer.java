@@ -64,7 +64,7 @@ public class ChannelServer extends Thread {
         ObjectOutputStream oos = new ObjectOutputStream(os);
 
         Connection conn = ConnectionsController.getConnection(destination);
-        
+
         if (!conn.hasSecretKey()){
             //Generate key and send key
             String key = "MY_ULTRA_SECRET";
