@@ -207,6 +207,8 @@ public enum ContactController {
             }
         }
 
+        System.out.println("Contains: " + contains);
+
         if (!contains) {
             newContact.updateId();
             contacts.add(newContact);

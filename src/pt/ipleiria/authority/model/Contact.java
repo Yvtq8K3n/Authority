@@ -198,7 +198,7 @@ public class Contact implements Serializable, Cloneable {
      * @return true
      */
     public boolean compareTo(Contact c) {
-        return MAC == c.getMAC() && publicKey == c.getPublicKey();
+        return MAC.equals(c.getMAC()) && new String(publicKey).equals(new String(c.getPublicKey()));
     }
 
     @Override
