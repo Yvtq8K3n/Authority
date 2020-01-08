@@ -41,33 +41,33 @@ public class ChannelServer extends Thread {
                     }
 
                     //Receive key
-                    byte[] key = Base64.getDecoder().decode((byte[]) ois.readObject());
+                    //byte[] key = Base64.getDecoder().decode((byte[]) ois.readObject());
 
                     //System.out.println("Key: " + Base64.getEncoder().encodeToString(key));
 
-                    //byte[] keyParteA = Base64.getDecoder().decode((byte[]) ois.readObject());//128 ola121212 ->   5464216545231o5465454156d4asl54645a
-                   // byte[] keyParteB = Base64.getDecoder().decode((byte[]) ois.readObject());//128 ola121212 ->   5464216545231o546545415612ghfgd645a
+                    byte[] keyParteA = Base64.getDecoder().decode((byte[]) ois.readObject());//256 ola121212 ->   5464216545231o5465454156d4asl54645a
+                    byte[] keyParteB = Base64.getDecoder().decode((byte[]) ois.readObject());//256 ola121212 ->   5464216545231o546545415612ghfgd645a
 
-                    //byte[] keyDecryptedA = ConnectionsController.decrypt(keyParteA,ContactController.getMyContact().getPrivateKeyClass());//128 ola152143546456465465465
-                    //byte[] keyDecryptedB = ConnectionsController.decrypt(keyParteB,ContactController.getMyContact().getPrivateKeyClass());//128
+                    byte[] keyDecryptedA = ConnectionsController.decrypt(keyParteA,ContactController.getMyContact().getPrivateKeyClass());//256 ola152143546456465465465
+                    byte[] keyDecryptedB = ConnectionsController.decrypt(keyParteB,ContactController.getMyContact().getPrivateKeyClass());//256
 
-                    //byte[] key = new byte[128];
+                    byte[] key = new byte[128];
 
-                    //System.arraycopy(keyDecryptedA,0, key, 0, 64);
-                   // System.arraycopy(keyDecryptedB, 0, key, 64, 64);
+                    System.arraycopy(keyDecryptedA,0, key, 0, 128);
+                    System.arraycopy(keyDecryptedB, 0, key, 128, 128);
 
-                   // byte[] fim = ConnectionsController.decrypt(key, contact.getPublicKeyClass());
+                    byte[] fim = ConnectionsController.decrypt(key, contact.getPublicKeyClass());
 
-                    //connection.setSecretKey(fim);
+                    connection.setSecretKey(fim);
 
                     //System.out.println("Key: " + new String(key));
 
                     //connection.setSecretKey(ConnectionsController.decrypt(ConnectionsController.decrypt(key, contact.getPublicKeyClass()),ContactController.getMyContact().getPrivateKeyClass()));
 
-                    byte[] uncypheredKey = ConnectionsController.decrypt(key, ContactController.getMyContact().getPrivateKeyClass());
-                    System.out.println(Base64.getEncoder().encodeToString(uncypheredKey));
+                    //byte[] uncypheredKey = ConnectionsController.decrypt(key, ContactController.getMyContact().getPrivateKeyClass());
+                    System.out.println(Base64.getEncoder().encodeToString(fim));
 
-                    connection.setSecretKey(uncypheredKey);
+                    //connection.setSecretKey(uncypheredKey);
 
                     System.out.println(Base64.getEncoder().encodeToString(connection.getSecretKey()));
                     System.out.println("ola");
@@ -111,29 +111,29 @@ public class ChannelServer extends Thread {
 
                 //byte[] cypheredKey = ConnectionsController.encrypt(ConnectionsController.encrypt(conn.getSecretKey(), ContactController.getMyContact().getPrivateKeyClass()), destination.getPublicKeyClass());
 
-                byte[] cypheredKey = ConnectionsController.encrypt(conn.getSecretKey(), destination.getPublicKeyClass());
+                //byte[] cypheredKey = ConnectionsController.encrypt(conn.getSecretKey(), destination.getPublicKeyClass());
                 //System.out.println(new String(cypheredKey));
 
-               // byte[] stCifra = ConnectionsController.encrypt(conn.getSecretKey(), ContactController.getMyContact().getPrivateKeyClass());
+                byte[] stCifra = ConnectionsController.encrypt(conn.getSecretKey(), ContactController.getMyContact().getPrivateKeyClass());
 
-                //byte[] parteA = new byte[stCifra.length/2];//32
-                //byte[] parteB = new byte[stCifra.length-parteA.length];//32
+                byte[] parteA = new byte[stCifra.length/2];//128
+                byte[] parteB = new byte[stCifra.length-parteA.length];//128
 
-                //System.arraycopy(stCifra,0,parteA,0,parteA.length);
-                //System.arraycopy(stCifra,parteA.length,parteB,0,parteB.length);
+                System.arraycopy(stCifra,0,parteA,0,parteA.length);
+                System.arraycopy(stCifra,parteA.length,parteB,0,parteB.length);
 
 
-                //byte[] encryptedA = ConnectionsController.encrypt(parteA, destination.getPublicKeyClass());//128 ola121212 ->   5464216545231o5465454156d4asl54645a
-                //byte[] encryptedB = ConnectionsController.encrypt(parteB, destination.getPublicKeyClass());//128 ola121212 ->   5464216545231o546545415612ghfgd645a
+                byte[] encryptedA = ConnectionsController.encrypt(parteA, destination.getPublicKeyClass());//256 ola121212 ->   5464216545231o5465454156d4asl54645a
+                byte[] encryptedB = ConnectionsController.encrypt(parteB, destination.getPublicKeyClass());//256 ola121212 ->   5464216545231o546545415612ghfgd645a
 
-                //oos.writeObject(Base64.getEncoder().encode(encryptedA));
-                //oos.writeObject(Base64.getEncoder().encode(encryptedB));
+                oos.writeObject(Base64.getEncoder().encode(encryptedA));
+                oos.writeObject(Base64.getEncoder().encode(encryptedB));
 
                //System.out.println("1st: " + new String(stCifra));
                 //System.out.println(("2nd: " + new String(ndCifra)));
 
 
-                oos.writeObject(Base64.getEncoder().encode(cypheredKey));
+                //oos.writeObject(Base64.getEncoder().encode(cypheredKey));
 
 
             }
