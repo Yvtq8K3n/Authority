@@ -14,7 +14,8 @@ import java.util.List;
 public enum ContactController {
     CONTACT_CONTROLLER;
 
-    private static final String PATH = "D:\\AuthorityKeys";//"/Users/joaoz/Downloads/";
+    private static final File rootDir = File.listRoots()[0];
+    private static final String PATH = rootDir.getPath() + "/AuthorityKeys";
 
     private static MainView view;
 
@@ -105,7 +106,7 @@ public enum ContactController {
 
         //Create directory when does not exists
         if (!f.exists()) {
-            f.getParentFile().mkdirs();
+            f.mkdirs();
         }
 
         try {
