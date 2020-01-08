@@ -11,6 +11,7 @@ import java.net.Socket;
 import java.nio.Buffer;
 import java.util.Base64;
 
+import static pt.ipleiria.authority.Sender.contact;
 import static pt.ipleiria.authority.Sender.getOutboundAddress;
 
 public class ChannelServer extends Thread {
@@ -64,7 +65,7 @@ public class ChannelServer extends Thread {
 
                     //connection.setSecretKey(ConnectionsController.decrypt(ConnectionsController.decrypt(key, contact.getPublicKeyClass()),ContactController.getMyContact().getPrivateKeyClass()));
 
-                    byte[] uncypheredKey = ConnectionsController.decrypt(key, ContactController.getMyContact().getPrivateKeyClass());
+                    byte[] uncypheredKey = ConnectionsController.decrypt(ConnectionsController.decrypt(key, ContactController.getMyContact().getPrivateKeyClass()), contact.getPublicKeyClass());
                     System.out.println(Base64.getEncoder().encodeToString(uncypheredKey));
 
                     connection.setSecretKey(uncypheredKey);
@@ -111,7 +112,7 @@ public class ChannelServer extends Thread {
 
                 //byte[] cypheredKey = ConnectionsController.encrypt(ConnectionsController.encrypt(conn.getSecretKey(), ContactController.getMyContact().getPrivateKeyClass()), destination.getPublicKeyClass());
 
-                byte[] cypheredKey = ConnectionsController.encrypt(conn.getSecretKey(), destination.getPublicKeyClass());
+                byte[] cypheredKey = ConnectionsController.encrypt(ConnectionsController.encrypt(conn.getSecretKey(), ContactController.getMyContact().getPrivateKeyClass()), destination.getPublicKeyClass());
                 //System.out.println(new String(cypheredKey));
 
                // byte[] stCifra = ConnectionsController.encrypt(conn.getSecretKey(), ContactController.getMyContact().getPrivateKeyClass());
