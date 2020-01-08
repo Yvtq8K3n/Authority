@@ -41,6 +41,8 @@ public class ChannelServer extends Thread {
                     //Receive key
                     byte[] key = Base64.getDecoder().decode((byte[]) ois.readObject());
 
+                    //System.out.println("Key: " + Base64.getEncoder().encodeToString(key));
+
                     //byte[] keyParteA = Base64.getDecoder().decode((byte[]) ois.readObject());//128 ola121212 ->   5464216545231o5465454156d4asl54645a
                    // byte[] keyParteB = Base64.getDecoder().decode((byte[]) ois.readObject());//128 ola121212 ->   5464216545231o546545415612ghfgd645a
 
@@ -60,10 +62,13 @@ public class ChannelServer extends Thread {
 
                     //connection.setSecretKey(ConnectionsController.decrypt(ConnectionsController.decrypt(key, contact.getPublicKeyClass()),ContactController.getMyContact().getPrivateKeyClass()));
 
-                    connection.setSecretKey(ConnectionsController.decrypt(key, ContactController.getMyContact().getPrivateKeyClass()));
+                    byte[] uncypheredKey = ConnectionsController.decrypt(key, ContactController.getMyContact().getPrivateKeyClass());
+                    System.out.println(Base64.getEncoder().encodeToString(uncypheredKey));
 
-                    //System.out.println(new String(connection.getSecretKey()));
-                    //System.out.println("ola");
+                    connection.setSecretKey(uncypheredKey);
+
+                    System.out.println(Base64.getEncoder().encodeToString(connection.getSecretKey()));
+                    System.out.println("ola");
                 }
 
                 //Uses key to decrypt message ....
