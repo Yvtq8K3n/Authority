@@ -128,18 +128,18 @@ public class ConnectionsPanel extends JPanel{
                 //Analyse node and apply changes accordingly
                 if(o != null ){
                     if (o instanceof String){
-                        if (o.equals("Channels")) label.setIcon(new ImageIcon("images/channels32x32.png"));
-                        else if (o.equals("Contacts")) label.setIcon(new ImageIcon("images/contacts32x32.png"));
+                        if (o.equals("Channels")) label.setIcon(new ImageIcon("./images/channels32x32.png"));
+                        else if (o.equals("Contacts")) label.setIcon(new ImageIcon("./images/contacts32x32.png"));
                     }else {
                         if (selected) label.setBackground(UIManager.getColor("Button.shadow"));
                         if (o instanceof Connection) {
                             Contact contact = ((Connection) o).getContact();
-                            label.setIcon(new ImageIcon("images/contacts/face_" + (contact.getId() % 30 + 1) + ".png"));
+                            label.setIcon(new ImageIcon("./images/contacts/face_" + (contact.getId() % 30 + 1) + ".png"));
                             label.setText(contact.getName() +"#"+contact.getId());
                         } else if (o instanceof Contact) {
                             Contact contact = (Contact) o;
                             label.setText(contact.getName() +"#"+contact.getId());
-                            label.setIcon(new ImageIcon("images/contacts/face_" + (contact.getId() % 30 + 1) + ".png"));
+                            label.setIcon(new ImageIcon("./images/contacts/face_" + (contact.getId() % 30 + 1) + ".png"));
                         }
                     }
                 }

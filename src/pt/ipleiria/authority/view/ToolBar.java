@@ -20,7 +20,8 @@ public class ToolBar extends JToolBar{
     }
 
     private void initComponents() {
-        btnShout = new JButton(new ImageIcon("images/shoutface32x32.png"));
+
+        btnShout = new JButton(new ImageIcon("./images/shoutface32x32.png"));
         btnShout.setToolTipText("Shout to retrieve other nodes");
         btnShout.addActionListener(new ActionListener() {
             @Override
@@ -29,7 +30,7 @@ public class ToolBar extends JToolBar{
             }
         });
 
-        btnProfile =  new JButton(new ImageIcon("images/profile32x32.png"));
+        btnProfile =  new JButton(new ImageIcon("./images/profile32x32.png"));
         btnProfile.setToolTipText("Apply Changes to your profile");
         btnProfile.addActionListener(new ActionListener() {
             @Override
