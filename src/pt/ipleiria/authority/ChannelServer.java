@@ -35,8 +35,10 @@ public class ChannelServer extends Thread {
                 Sender.logger.info("contact:" + contact);
                 Sender.logger.info("connection:" + connection);
 
-                if(connection == null){
-                    connection = ConnectionsController.addConnection(contact);
+                if(connection == null || !connection.hasSecretKey()){
+                    if (connection == null) {
+                        connection = ConnectionsController.addConnection(contact);
+                    }
 
                     //Receive key
                     byte[] key = Base64.getDecoder().decode((byte[]) ois.readObject());
@@ -80,12 +82,6 @@ public class ChannelServer extends Thread {
                 System.out.println("message send:"+message);
 
                 ConnectionsController.updateChannelChatbox(contact,message);
-
-                try {
-                    ConnectionsController.getChatPanel(connection).addMessage(ContactController.getMyContact_pbk().getName(), message);
-                } catch (CloneNotSupportedException e) {
-                    e.printStackTrace();
-                }
 
                 //Show/Process new contact
                 Sender.logger.info("Message Received");
