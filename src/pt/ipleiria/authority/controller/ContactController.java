@@ -14,8 +14,8 @@ import java.util.List;
 public enum ContactController {
     CONTACT_CONTROLLER;
 
-    private static final File rootDir = File.listRoots()[0];
-    private static final String PATH = rootDir.getPath() + "/AuthorityKeys";
+    private static final String home = System.getProperty("user.home");
+    private static final String PATH = home + "/AuthorityKeys";
 
     private static MainView view;
 
