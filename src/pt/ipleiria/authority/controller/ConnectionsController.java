@@ -139,15 +139,18 @@ public enum ConnectionsController {
                 Contact dest = activeConnection.getContact();
                 ChannelServer.sendMessage(dest, message);
 
-                //Updates
-                ChannelChatView chatPanel= chatPanels.get(activeConnection);
-                chatPanel.addMessage(ContactController.getMyContact_pbk().getName(), message);
+                updateChannelChatbox(ContactController.getMyContact_pbk(), message);
             }
         } catch (IOException | CloneNotSupportedException e) {
             e.printStackTrace();
         }
     }
 
+    public static void updateChannelChatbox(Contact from, String message){
+        //Updates
+        ChannelChatView chatPanel= chatPanels.get(activeConnection);
+        chatPanel.addMessage(from.getName(), message);
+    }
 
     public static void updateChannelChatView(Connection connection){
         activeConnection = connection;
