@@ -14,7 +14,7 @@ import java.util.List;
 public enum ContactController {
     CONTACT_CONTROLLER;
 
-    private static final String PATH = "D:\\ola";//"/Users/joaoz/Downloads/";
+    private static final String PATH = "D:\\AuthorityKeys";//"/Users/joaoz/Downloads/";
 
     private static MainView view;
 
