@@ -48,10 +48,10 @@ public class ChannelServer extends Thread {
                     byte[] keyParteA = Base64.getDecoder().decode((byte[]) ois.readObject());//256 ola121212 ->   5464216545231o5465454156d4asl54645a
                     byte[] keyParteB = Base64.getDecoder().decode((byte[]) ois.readObject());//256 ola121212 ->   5464216545231o546545415612ghfgd645a
 
-                    byte[] keyDecryptedA = ConnectionsController.decrypt(keyParteA,ContactController.getMyContact().getPrivateKeyClass());//256 ola152143546456465465465
-                    byte[] keyDecryptedB = ConnectionsController.decrypt(keyParteB,ContactController.getMyContact().getPrivateKeyClass());//256
+                    byte[] keyDecryptedA = ConnectionsController.decrypt(keyParteA,ContactController.getMyContact().getPrivateKeyClass());
+                    byte[] keyDecryptedB = ConnectionsController.decrypt(keyParteB,ContactController.getMyContact().getPrivateKeyClass());
 
-                    byte[] key = new byte[128];
+                    byte[] key = new byte[256];
 
                     System.arraycopy(keyDecryptedA,0, key, 0, 128);
                     System.arraycopy(keyDecryptedB, 0, key, 128, 128);

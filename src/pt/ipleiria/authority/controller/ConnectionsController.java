@@ -68,7 +68,7 @@ public enum ConnectionsController {
 
     public static byte[] encrypt(byte[] data, PublicKey key) {
         try {
-            Cipher cipher = Cipher.getInstance("RSA/ECB/NoPadding");
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.ENCRYPT_MODE, key);
             return cipher.doFinal(data);
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e){
@@ -80,7 +80,7 @@ public enum ConnectionsController {
 
     public static byte[] encrypt(byte[] data, PrivateKey key) {
         try {
-            Cipher cipher = Cipher.getInstance("RSA/ECB/NoPadding");
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.ENCRYPT_MODE, key);
             return cipher.doFinal(data);
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e){
@@ -91,7 +91,7 @@ public enum ConnectionsController {
 
     public static byte[] decrypt(byte[] data, PrivateKey key) {
         try {
-            Cipher cipher = Cipher.getInstance("RSA/ECB/NoPadding");
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.DECRYPT_MODE, key);
             return cipher.doFinal(data);
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e){
@@ -102,7 +102,7 @@ public enum ConnectionsController {
 
     public static byte[] decrypt(byte[] data, PublicKey key) {
         try {
-            Cipher cipher = Cipher.getInstance("RSA/ECB/NoPadding");
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.DECRYPT_MODE, key);
             return cipher.doFinal(data);
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e){
