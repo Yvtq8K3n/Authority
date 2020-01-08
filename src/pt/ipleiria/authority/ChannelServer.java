@@ -8,6 +8,7 @@ import pt.ipleiria.authority.model.Contact;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.Buffer;
 import java.util.Base64;
 
 import static pt.ipleiria.authority.Sender.getOutboundAddress;
@@ -38,7 +39,16 @@ public class ChannelServer extends Thread {
                     connection = ConnectionsController.addConnection(contact);
 
                     //Receive key
-                    byte[] key = Base64.getDecoder().decode((byte[]) ois.readObject());
+                    byte[] keyParteA = Base64.getDecoder().decode((byte[]) ois.readObject());
+                    byte[] keyParteB = Base64.getDecoder().decode((byte[]) ois.readObject());
+
+                    byte[] keyDecryptedA = ConnectionsController.decrypt(keyParteA,ContactController.getMyContact().getPrivateKeyClass());
+                    byte[] keyDecryptedB = ConnectionsController.decrypt(keyParteB,ContactController.getMyContact().getPrivateKeyClass());
+
+                    byte[] key = new byte[keyDecryptedA.length+keyDecryptedB.length];
+
+                    System.arraycopy(keyDecryptedA,0, key, 0, keyDecryptedA.length);
+                    System.arraycopy(keyDecryptedB, 0, key, keyDecryptedA.length, key.length);
 
                     System.out.println("Key: " + new String(key));
 
@@ -96,13 +106,25 @@ public class ChannelServer extends Thread {
             //System.out.println(new String(cypheredKey));
 
             byte[] stCifra = ConnectionsController.encrypt(conn.getSecretKey(), ContactController.getMyContact().getPrivateKeyClass());
-            byte[] ndCifra = ConnectionsController.encrypt(stCifra, destination.getPublicKeyClass());
 
-            System.out.println("1st: " + new String(stCifra));
-            System.out.println(("2nd: " + new String(ndCifra)));
+            byte[] parteA = new byte[stCifra.length/2];
+            byte[] parteB = new byte[stCifra.length-parteA.length];
+
+            System.arraycopy(stCifra,0,parteA,0,parteA.length);
+            System.arraycopy(stCifra,parteA.length,parteB,0,parteB.length);
 
 
-            oos.writeObject(Base64.getEncoder().encode(ndCifra));
+            byte[] encryptedA = ConnectionsController.encrypt(parteA, destination.getPublicKeyClass());
+            byte[] encryptedB = ConnectionsController.encrypt(parteB, destination.getPublicKeyClass());
+
+            oos.writeObject(Base64.getEncoder().encode(encryptedA));
+            oos.writeObject(Base64.getEncoder().encode(encryptedB));
+
+           //System.out.println("1st: " + new String(stCifra));
+            //System.out.println(("2nd: " + new String(ndCifra)));
+
+
+            //oos.writeObject(Base64.getEncoder().encode(ndCifra));
         }
 
         //Sends message
