@@ -12,7 +12,7 @@ Pure peer‑to‑peer chat application for LAN environments with end‑to‑end 
 
 ## Screenshot
 
-![Chat working](./latex_template\images\teste_chat_funcional.png)
+![Chat working](https://github.com/Yvtq8K3n/Authority/blob/master/latex_template/images/teste_chat_funcional.png)
 
 ## Functionality
 - ✅ LAN peer discovery (firewall dependent)
