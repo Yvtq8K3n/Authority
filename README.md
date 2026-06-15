@@ -10,6 +10,10 @@ This project was developed in 2020 for academic purposes only as part of a curri
 ## Overview
 Pure peer‑to‑peer chat application for LAN environments with end‑to‑end encryption. No central server. Implements automatic peer discovery (UDP broadcast + TCP unicast) and hybrid cryptography (RSA for handshake, AES for messaging).
 
+## Screenshot
+
+![Chat working](./latex_template\images\teste_chat_funcional.png)
+
 ## Functionality
 - ✅ LAN peer discovery (firewall dependent)
 - ✅ Secure channel establishment (RSA + AES)
