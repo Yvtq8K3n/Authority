@@ -25,9 +25,5 @@ Pure peer‑to‑peer chat application for LAN environments with end‑to‑end 
 ## Technologies
 Java (JDK 8+), UDP/TCP sockets, Java Cryptography Architecture (RSA/AES)
 
-## Observations
-mTLS -> Could be possible? Sure, but would lose anonymity
-DHT Hashing -> Partially, covered but a more depth would made the paper more i
-
 ## Original Paper
 `Authority___Secure_Serverless_P2P_Chat.pdf`.
